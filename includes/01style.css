@@ -1,0 +1,624 @@
+body[id="month"] {
+    padding: 35px 5% !important;
+    background: #f7fafd;
+    font-family: "Muli", sans-serif !important;
+}
+body[id="login"] {
+    background: url("images/hero-login.jpeg") no-repeat;
+    background-size: inherit;
+    font-family: "Muli", sans-serif !important;
+    position: fixed;
+    width: 100%;
+    margin-top: 0 !important;
+    color: #fff;
+    margin-bottom: 0 !important;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+body[id="login"] h2 {
+    color: #fff;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+body[id="login"] a {
+    color: #fff;
+    background: #ff6633;
+    padding: 6px 18px 6px;
+    font-size: 12px;
+    border-radius: 12px;
+}
+body[id="login"] a:last-child {
+    display: none !important;
+}
+body[id="login"] a[href="nulogin.php?login=_NUC_manorhotel1"] {
+    display: none;
+}
+body[id="login"] .cookies {
+    display: none;
+}
+
+body[id="login"] input[type="submit"] {
+    padding: 8px 16px;
+    font-size: 14px;
+    letter-spacing: 0;
+    background: #1e7afe;
+    border-radius: 2px;
+    margin: 25px 0 0;
+}
+
+body[id="login"] input[name="remember"] {
+float:left;opacity: 0.75;width: 20px;margin: 10px 0;cursor: pointer;}
+
+
+body[id="login"] input {
+    font-family: "Muli";
+    padding: 10px 0;
+    font-size: 14px;
+    letter-spacing: 1px;
+    outline: 0;
+    border: 0;
+    border-bottom: 1px solid #ddd;
+    margin: 0 0 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input:-webkit-autofill,select:-webkit-autofill,textarea:-webkit-autofill{-webkit-box-shadow: 0 0 0 1000px #fff inset!important;}
+
+body[id="viewentry"] {
+    padding: 35px 5% !important;
+    background: #f7fafd;
+    font-family: "Muli", sans-serif !important;
+}
+body[id="viewentry"] h2 {
+    text-align: center;
+    background: #fff;
+    margin: 50px auto 0;
+    width: 500px;
+    padding: 30px 0;
+    border-radius: 24px 24px 0 0;
+    font-size: 18px;
+    color: #ff6633;
+    font-weight: 700;
+}
+body[id="viewentry"] .opis {
+    text-align: center;
+    width: 500px;
+    display: block;
+    margin: 0 auto 50px;
+    font-size: 12px;
+    line-height: 20px;
+    color: #455769;
+    box-sizing: border-box;
+    background: #fff;
+    padding: 0 30px 30px;
+    border-radius: 0 0 24px 24px;
+}
+
+body[id="editentry"] {
+    padding: 35px 5% !important;
+    background: #f7fafd;
+    font-family: "Muli", sans-serif !important;
+    text-align: center;
+}
+body[id="editentry"] h2 {
+    text-align: center;
+    margin: 26px 0 50px;
+    color: #626d77;
+}
+body[id="editentry"] h2 img {
+    display: none;
+}
+#tabs {
+    display: block;
+    background: 0;
+    border: 0;
+    margin: auto;
+}
+#tabs #tab_participants,
+#tabs #tab_reminder {
+    display: none;
+}
+
+.popup {
+    border: 1px solid #eaedf3;
+    text-align: left;
+    line-height: 20px;
+    padding: 5px 10px!important;
+    color: #2a303a;
+background: #ffffff;box-shadow: 0px 5px 20px 0px #aab3bd;border-radius: 4px;font-size: 12px;}
+.popup dt,
+.popup dd {
+    display: none;
+}
+.popup dd:last-child {
+    display: block;
+    margin-left: 0;
+}
+
+.tabfor,
+.tabbak {
+    color: red !important;
+    border: 0;
+    background: 0;
+    position: relative;
+    top: -15px;
+    margin: 0 10px;
+}
+.tabfor {
+    border-bottom: 2px solid #ff6633;
+    padding-bottom: 3px;
+}
+.tabfor a {
+    color: #ff6633;
+    font-weight: 100;
+}
+.tabbak {
+    background: 0;
+}
+.tabbak a {
+    color: #a8b1b9;
+    font-weight: 100;
+}
+.tabfor a:hover,
+.tabbak a:hover {
+    color: #ff6633;
+}
+
+#tabscontent {
+    background: white;
+    border: 1px solid #dae0e6;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 900px;
+    margin: auto;
+    text-align: left;
+    border-radius: 5px;
+    margin: 50px auto 100px;
+}
+#tabscontent label {
+    color: #444;
+    font-size: 12px;
+    text-align: left;
+    width: 200px;
+}
+#tabscontent input {
+    margin: 20px 0;
+    background: #ffffff;
+    padding: 5px 10px;
+    width: 100%;
+}
+#tabscontent textarea {
+    width: 100%;
+    background: #ffffff;
+    padding: 5px 10px;
+    font-family: "Muli", sans-serif;
+    resize: vertical;
+}
+#tabscontent input[type="button"] {
+    background: #ff6633;
+    border: 0;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+    width: 75px;
+    outline: 0 !important;
+}
+#tabscontent .aligntop table {
+    display: none;
+}
+#timeentryduration {
+    display: none;
+}
+#tabscontent_pete table tr {
+    display: flex;
+    justify-content: center;
+    align-items: left;
+    text-align: left;
+}
+
+#tabscontent label[id="rpt_mode"] {
+    display: none;
+}
+#tabscontent #tabscontent_pete tr[id="rptenddate1"],
+#tabscontent #tabscontent_pete tr[id="rptenddate3"],
+#tabscontent #tabscontent_pete tr[id="rptfreq"],
+#tabscontent #tabscontent_pete tr[id="rptexceptions"] {
+    display: none;
+}
+.boxleft,
+.boxright {
+    border: 0;
+    float: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.boxright {
+    position: relative;
+    top: 7px;
+}
+#tabscontent_pete input[name="rpt_end_use"] {
+    position: absolute;
+    left: 230px;
+    top: 49px;
+    width: 10px;
+}
+
+.sv {
+    background: #ff6633 !important;
+    border: 4px solid #ffad92;
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    right: 50px;
+    top: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#register table,
+#login table {
+    background: white;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    border: 0;
+    width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px 50px;
+    box-sizing: border-box;
+}
+#register table,
+#login table td img {
+    display: none;
+}
+
+#register table,
+#login table label {
+    font-size: 14px;
+    color: #333;
+    font-weight: 100;
+}
+
+#register table,
+#login table label[for="user"] {
+display:none
+}
+
+#register table,
+#login table label[for="password"] {
+display:none
+}
+
+
+#register table,
+#login table label[for="remember"] {
+    color: #555;
+    font-size: 12px;
+    margin: 8px 0;
+    display: block;
+}
+
+.main td {
+    background: #ffffff;
+}
+.main td.weekend {
+    background: #f1f7fd;
+}
+.main td.othermonth {
+    background: #f4f6f9;
+    background: repeating-linear-gradient(45deg, #ffffff, #ffffff 10px, #f1f7fd 10px, #f1f7fd 20px);
+}
+.main td.today {
+    background: #c8d5ef !important;
+border: 2px solid #c8d5ef!important;}
+
+.main td.hasevents {
+    background: 0;
+}
+
+table[class="main"] {
+    margin: 80px 0 0;
+    padding: 30px 0 0;
+    border: 0;
+    border-top: 2px dashed #e9eff5;
+}
+table[class="main"].main th {
+    background: 0;
+    border: 0;
+    padding: 0 0 25px;
+    color: #55697d;
+    font-weight: 700;
+}
+table[class="main"].main td {
+    border: 0.5px solid #ecf0f5;
+    padding: 0 10px;
+}
+table[class="main"].main td a span {
+    font-size: 12px;
+}
+.dayofmonth {
+    border: 0;
+    background: #6192ff;
+    color: #fff;
+    padding: 3px;
+    position: relative;
+    font-size: 12px;
+    margin-bottom: 0px;
+    display: block;
+    width: 15px;
+    left: -10px;
+    top: 0;
+}
+.dayofmonth:hover {
+    border: 0;
+    color: #fff;
+}
+.new {
+    width: 10px;
+    height: 10px;
+    top: 4px;
+    right: -4px;
+    position: relative;
+    background: #bbcad8;
+    padding: 3px;
+    border-radius: 50%;
+border: 2px solid white;}
+.title {
+    position: relative;
+    top: 50px;
+    width: auto;
+    display: inline-block;
+    text-align: left;
+}
+.categories {
+    display: none;
+}
+.user {
+    font-weight: 100 !important;
+    color: #95a4b3 !important;
+    font-size: 16px !important;
+    letter-spacing: 2px;
+    line-height: 35px;
+}
+
+.topnav a.next,
+.topnav a.prev {
+    display: none;
+}
+body#day td {
+    width: 100%;
+    margin: auto;
+}
+body#day img.new {
+    display: none;
+}
+body#day tr th {
+    display: none;
+}
+
+#day .title {
+    display: block;
+    width: 800px;
+    margin: 0 auto 80px;
+}
+#day .title .user {
+    display: none;
+}
+#day .glance {
+    border: 0 !important;
+}
+#day .glance td {
+    border: 0 !important;
+    width: 100%;
+    display: table;
+    height: auto;
+}
+#day span#cat {
+    display: none !important;
+}
+#day div.minicalcontainer {
+    display: none;
+}
+#day dl.desc dd {
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+#day .hasevents {
+    display: block;
+    width: 800px !important;
+    margin: auto;
+}
+#day dl.desc {
+    border-bottom: 1px solid #ddd;
+    margin: 0 0 20px;
+    padding: 0 0 20px;
+    white-space: pre;
+}
+#day dl.desc dt {
+    display: none;
+}
+#day .hasevents .entry,
+#day .hasevents .layerentry span {
+    font-size: 14px !important;
+    color: #000 !important;
+    border: 0;
+    background: 0;
+}
+
+#day .glance th.row {
+    display: none;
+}
+#day .glance td.today {
+    display: none;
+}
+
+#month #prevmonth,
+#viewl #prevmonth {
+    float: right;
+}
+#month #nextmonth,
+#viewl #nextmonth {
+    float: right;
+    margin: 0 50px;
+}
+.minical td {
+    background: 0;
+    border: 0;
+}
+.minical td a {
+    color: #768a9e;
+    font-weight: 700;
+}
+.minical td.weekend,
+#editentry th.weekend a {
+    background: #f7fafd;
+    opacity: 0.4;
+    font-weight: 700;
+}
+.minical th,
+.minical td.empty {
+    color: #ff6633;
+    background: 0;
+    font-size: 10px;
+    line-height: 30px;
+}
+.minical td#today {
+    background: 0;
+}
+.minical caption a {
+    color: #55697d;
+}
+.minical caption a:hover {
+    color: #4c8fd2;
+}
+.weeknumber {
+    display: none !important;
+}
+
+input[type="submit"] {
+    background: #ff6633;
+    border: 0;
+    color: #fff;
+    padding: 2px 12px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+input[type="submit"]:hover {
+    opacity: 0.9;
+}
+input[type="submit"]:focus {
+    outline: 0;
+}
+
+.layerentry {
+    display: inline-block;
+}
+.printer {
+    width: 120px;
+    text-align: center;
+    padding: 25px 0;
+    color: #55697d;
+    margin: auto;
+}
+
+.layerentry,
+.entry {
+    font-size: 12px;
+    text-decoration: none;
+    position: relative;
+    top: 0;
+    font-weight: 700;
+    line-height: 22px;
+}
+.layerentry img,
+.entry img {
+    display: none;
+}
+#dateselector form {
+    border-top: 2px dashed #e9eff5;
+    padding: 20px 0;
+    margin: 0;
+}
+
+a:hover {
+    color: #4c8fd2;
+}
+
+a.marketing {
+    background: #fff6f3;
+    border-bottom: 1px solid var(--marketing-color);
+    border-top: 1px solid var(--marketing-color);
+    display: block;
+    line-height: 16px;
+    padding: 10px 5px;
+color: var(--marketing-color);}
+a.marketing:hover {
+    color: var(--marketing-color);
+}
+
+:root {
+    --marketing-color: #ff6633;
+    --recepcja-color: #4e7dff;
+}
+
+a.recepcja {
+    background: #f6f9ff;
+    border-bottom: 1px solid var(--recepcja-color);
+    border-top: 1px solid var(--recepcja-color);
+    display: block;
+    line-height: 16px;
+    padding: 5px;
+}
+a.recepcja:hover {
+    color: var(--recepcja-color);
+}
+a.recepcja span {
+    color: var(--recepcja-color) !important;
+}
+
+br {
+    line-height: 10px;
+}
+
+#register table tbody, #login table tbody {width: 100%;display: block;padding: 20px 0;}
+#register table tr, #login table tr {display: block;}
+#register table td, #login table td {margin: 0;padding: 0;width: 100%;float: left;}
+
+.intro {margin: 0 0 25px;display: flex;justify-content: center;align-items: center;flex-direction: column;border-bottom: 2px solid #555;padding: 0 0 25px;}
+.intro h6 {
+    color: #000;
+    font-size: 32px;
+    margin: 0 0 5px;
+    padding: 0;
+    text-align: center;
+    font-weight: 700;
+    font-family: 'Muli';
+    letter-spacing: 2px;
+}
+.intro span {
+    color: #777;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
