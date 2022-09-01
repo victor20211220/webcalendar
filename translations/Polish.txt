@@ -557,6 +557,7 @@ brief-description-help: Powinien to być krótki opis (około 20 znaków) wydarz
 Brief Description: Krótki opis
 full-description-help: Powinien to być pełny opis wydarzenia. Będzie wyświetlany podczas oglądania wydarzenia.
 Full Description: Pełen opis
+Additional notes: Additional notes
 access-help: Określa poziom dostępu do wydarzenia.<br /><i>Publiczny</i>: Każdy może oglądać wszystkie szczegóły wydarzenia.<br /><i>Poufny</i>: Inni użytkownicy widzą wpis, ale nie mogą oglądać jego szczegółów.
 Access: Dostęp
 priority-help: Określa priorytet wydarzenia. Wysoki priorytet będzie wyświetlany pogrubioną czcionką.

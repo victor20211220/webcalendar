@@ -627,6 +627,18 @@ function completed_handler () {
   }
 }
 
+function displayEventFields(){
+        const eventType = $('#reservationSelect').val();
+        if(eventType == "0"){
+            $('.event-row').hide();
+            $('.event-row:not([class*=group])').show();
+            $('#eventNameLabel').text('Guest name');
+        }else if(eventType == "1"){
+            $('.event-row').hide();
+            $('.event-row:not([class*=individual])').show();
+            $('#eventNameLabel').text('Group name');
+        }
+}
 function onLoad () {
   if ( ! document.editentryform )
 	  return false;
@@ -681,4 +693,9 @@ function onLoad () {
   toggle_reminders ();
   toggle_rem_rep ();
   completed_handler ();
+    displayEventFields();
+    $('#reservationSelect').change(function(){
+        displayEventFields();
+    })
 }
+

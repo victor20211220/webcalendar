@@ -131,6 +131,7 @@ function print_header ( $includes = '', $HeadX = '', $BodyX = '',
      . '/theme.js"></script>';
   }
 
+  $ret .= '<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>';
   $ret .= ( ! $disableUTIL ? '
     <script type="text/javascript" src="includes/js/util.js"></script>' : '' );
   // Any other includes?
@@ -145,6 +146,7 @@ function print_header ( $includes = '', $HeadX = '', $BodyX = '',
          . $inc . '"></script>';
     }
   }
+
   // Do we need anything else inside the header tag?
   if ( $HeadX )
     $ret .= '

@@ -22,146 +22,190 @@ include_once 'includes/init.php';
  *
  * @return string HTML for the selection box
  */
-function time_selection ( $prefix, $time = '', $trigger = false ) {
-  global $checked, $ENTRY_SLOTS, $selected, $TIME_FORMAT, $WORK_DAY_START_HOUR;
+function time_selection($prefix, $time = '', $trigger = false)
+{
+	global $checked, $ENTRY_SLOTS, $selected, $TIME_FORMAT, $WORK_DAY_START_HOUR;
 
-  $amsel = $pmsel = $ret = '';
-  $trigger_str = ( $trigger ? 'onchange="' . $prefix . 'timechanged() ' : '' );
+	$amsel = $pmsel = $ret = '';
+	$trigger_str = ($trigger ? 'onchange="' . $prefix . 'timechanged() ' : '');
 
-  if ( ! isset ( $time ) && $time != 0 ) {
-    $hour = $WORK_DAY_START_HOUR;
-    $minute = 0;
-  } else {
-    $hour = floor ( $time / 10000 );
-    $minute = ( ( $time / 100 ) % 100 ) % 60;
-  }
-  if ( $TIME_FORMAT == '12' ) {
-    $maxhour = 12;
-    if ( $hour < 12 || $hour == 24 )
-      $amsel = $checked;
-    else
-      $pmsel = $checked;
+	if (!isset ($time) && $time != 0) {
+		$hour = $WORK_DAY_START_HOUR;
+		$minute = 0;
+	} else {
+		$hour = floor($time / 10000);
+		$minute = (($time / 100) % 100) % 60;
+	}
+	if ($TIME_FORMAT == '12') {
+		$maxhour = 12;
+		if ($hour < 12 || $hour == 24)
+			$amsel = $checked;
+		else
+			$pmsel = $checked;
 
-    $hour %= 12;
-    if ( $hour == 0 )
-      $hour = 12;
-  } else {
-    $maxhour = 24;
-    $hour = sprintf ( "%02d", $hour );
-  }
-  $minute = sprintf ( "%02d", $minute );
-  $ret .= '
+		$hour %= 12;
+		if ($hour == 0)
+			$hour = 12;
+	} else {
+		$maxhour = 24;
+		$hour = sprintf("%02d", $hour);
+	}
+	$minute = sprintf("%02d", $minute);
+	$ret .= '
             <select ' . 'name="' . $prefix . 'hour" id="' . $prefix . 'hour" '
-   . $trigger_str . '>';
-  for ( $i = 0; $i < $maxhour; $i++ ) {
-    $ihour = ( $TIME_FORMAT == '24' ? sprintf ( "%02d", $i ) : $i );
-    if ( $i == 0 && $TIME_FORMAT == '12' )
-      $ihour = 12;
+		. $trigger_str . '>';
+	for ($i = 0; $i < $maxhour; $i++) {
+		$ihour = ($TIME_FORMAT == '24' ? sprintf("%02d", $i) : $i);
+		if ($i == 0 && $TIME_FORMAT == '12')
+			$ihour = 12;
 
-    $ret .= '
-              <option value="' . "$i\"" . ( $ihour == $hour ? $selected : '' )
-     . ">$ihour" . '</option>';
-  }
-  $ret .= '
+		$ret .= '
+              <option value="' . "$i\"" . ($ihour == $hour ? $selected : '')
+			. ">$ihour" . '</option>';
+	}
+	$ret .= '
             </select>:
             <select ' . 'name="' . $prefix . 'minute" id="' . $prefix
-   . 'minute" ' . $trigger_str . '>';
-  // We use $TIME_SLOTS to populate the minutes pulldown.
-  $found = false;
-  for ( $i = 0; $i < 60; ) {
-    $imin = sprintf ( "%02d", $i );
-    $isselected = '';
-    if ( $imin == $minute ) {
-      $found = true;
-      $isselected = $selected;
-    }
-    $ret .= '
+		. 'minute" ' . $trigger_str . '>';
+	// We use $TIME_SLOTS to populate the minutes pulldown.
+	$found = false;
+	for ($i = 0; $i < 60;) {
+		$imin = sprintf("%02d", $i);
+		$isselected = '';
+		if ($imin == $minute) {
+			$found = true;
+			$isselected = $selected;
+		}
+		$ret .= '
               <option value="' . "$i\"$isselected>$imin" . '</option>';
-    $i += ( 1440 / $ENTRY_SLOTS );
-  }
-  // We'll add an option with the exact time if not found above.
-  return $ret . ( $found ? '' : '
-              <option value="' . "$minute\" $selected>$minute" . '</option>' ) . '
-            </select>' . ( $TIME_FORMAT == '12' ? '
+		$i += (1440 / $ENTRY_SLOTS);
+	}
+	// We'll add an option with the exact time if not found above.
+	return $ret . ($found ? '' : '
+              <option value="' . "$minute\" $selected>$minute" . '</option>') . '
+            </select>' . ($TIME_FORMAT == '12' ? '
             <label><input type="radio" name="' . $prefix . 'ampm" id="'
-     . $prefix . 'ampmA" value="0" ' . $amsel . ' />&nbsp;' . translate ( 'am' )
-     . '</label>
+			. $prefix . 'ampmA" value="0" ' . $amsel . ' />&nbsp;' . translate('am')
+			. '</label>
             <label><input type="radio" name="' . $prefix . 'ampm" id="'
-     . $prefix . 'ampmP" value="12" ' . $pmsel . ' />&nbsp;' . translate ( 'pm' )
-     . '</label>' : '
-            <input type="hidden" name="' . $prefix . 'ampm" value="0" />' );
+			. $prefix . 'ampmP" value="12" ' . $pmsel . ' />&nbsp;' . translate('pm')
+			. '</label>' : '
+            <input type="hidden" name="' . $prefix . 'ampm" value="0" />');
 }
 
-$daysStr = translate ( 'days' );
-$hoursStr = translate ( 'hours' );
-$minutStr = translate ( 'minutes' );
-$saveStr = translate ( 'Save' );
 
-load_user_categories ();
+$daysStr = translate('days');
+$hoursStr = translate('hours');
+$minutStr = translate('minutes');
+$saveStr = translate('Save');
+
+load_user_categories();
+
 
 // Default for using tabs is enabled.
-if ( empty ( $EVENT_EDIT_TABS ) )
-  $EVENT_EDIT_TABS = 'Y'; // default
+if (empty ($EVENT_EDIT_TABS))
+	$EVENT_EDIT_TABS = 'Y'; // default
 
-$useTabs = ( $EVENT_EDIT_TABS == 'Y' );
+$useTabs = ($EVENT_EDIT_TABS == 'Y');
 // Make sure this is not a read-only calendar.
 $can_edit = false;
 $others_complete = 'yes';
 $checked = ' checked="checked"';
 $selected = ' selected="selected"';
 
+const EVENT_TYPES = ["individual", "group"];
+const NUMBER_ROOMS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const NUMBER_PEOPLE = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+const BED_TYPES = [
+	"1",
+	"1+1",
+	"2",
+	"2+1",
+	"1+1+1",
+	"2+1+1 (dwupoziomowy)",
+	"2+1+1+1 (dwupoziomowy)",
+];
+
+const FOOD_PACKAGES = [
+	"Śniadanie",
+	"Śniadanie i obiadokolacja",
+	"Śniadanie, obiad i kolacja",
+];
+
+const SOURCES = [
+	"Booking.com",
+	"Email",
+	"Rez. telefoniczna",
+	"Inna",
+];
+
+function event_dropdown_options($val, $options)
+{
+	global $selected;
+	$html = "";
+//	var_dump($val);
+//	var_dump($options);exit();
+	foreach ($options as $key => $option) {
+		$html .= "<option value=\"" . $key . "\"" . ((!is_null($val) && $key == $val) ? $selected : "") . ">" . $option . "</option>";
+	}
+	return $html;
+}
+
 // Public access can only add events, not edit.
-if ( empty ( $login ) || ( $login == '__public__' && $id > 0 ) )
-  $id = 0;
+if (empty ($login) || ($login == '__public__' && $id > 0))
+	$id = 0;
 
-$eType = getGetValue ( 'eType' );
-if ( empty ( $eType ) )
-  $eType = 'event';
+$eType = getGetValue('eType');
+if (empty ($eType))
+	$eType = 'event';
 
-$copy = getValue ( 'copy', '[01]' );
-$date = getValue ( 'date', '-?[0-9]+' );
-$day = getValue ( 'day', '-?[0-9]+' );
-$month = getValue ( 'month', '-?[0-9]+' );
-$year = getValue ( 'year', '-?[0-9]+' );
+$isEventManage = $eType === 'event';
 
-if ( empty ( $date ) && empty ( $month ) ) {
-  if ( empty ( $year ) )
-    $year = date ( 'Y' );
+$copy = getValue('copy', '[01]');
+$date = getValue('date', '-?[0-9]+');
+$day = getValue('day', '-?[0-9]+');
+$month = getValue('month', '-?[0-9]+');
+$year = getValue('year', '-?[0-9]+');
 
-  $month = date ( 'm' );
+if (empty ($date) && empty ($month)) {
+	if (empty ($year))
+		$year = date('Y');
 
-  if ( empty ( $day ) )
-    $day = date ( 'd' );
+	$month = date('m');
 
-  $date = sprintf ( "%04d%02d%02d", $year, $month, $day );
+	if (empty ($day))
+		$day = date('d');
+
+	$date = sprintf("%04d%02d%02d", $year, $month, $day);
 }
 
 $BodyX = 'onload="onLoad();"';
-$INC = array ( 'js/edit_entry.php/false/' . $user, 'js/visible.php' );
+$INC = array('js/edit_entry.php/false/' . $user, 'js/visible.php');
 $textareasize = '15';
 
 // Can we use HTMLArea or FCKEditor? (Relax! That's the authors initials.)
 // Note: HTMLArea has been discontinued, so FCKEditor is preferred.
 $use_fckeditor = $use_htmlarea = false;
 
-if ( $ALLOW_HTML_DESCRIPTION == 'Y' ) {
-  // Allow HTML in description.
-  // If they have installed an HTML edit widget, make use of it.
-  if ( file_exists ( 'includes/FCKeditor-2.0/fckeditor.js' ) &&
-      file_exists ( 'includes/FCKeditor-2.0/fckconfig.js' ) ) {
-    $textareasize = '20';
-    $use_fckeditor = true;
-  } else
-  if ( file_exists ( 'includes/htmlarea/htmlarea.php' ) ) {
-    $BodyX = 'onload="onLoad();initEditor();';
-    $INC[] = 'htmlarea/core.php/true';
-    $INC[] = 'htmlarea/htmlarea.php/true';
-    $use_htmlarea = true;
-  }
+if ($ALLOW_HTML_DESCRIPTION == 'Y') {
+	// Allow HTML in description.
+	// If they have installed an HTML edit widget, make use of it.
+	if (file_exists('includes/FCKeditor-2.0/fckeditor.js') &&
+		file_exists('includes/FCKeditor-2.0/fckconfig.js')) {
+		$textareasize = '20';
+		$use_fckeditor = true;
+	} else
+		if (file_exists('includes/htmlarea/htmlarea.php')) {
+			$BodyX = 'onload="onLoad();initEditor();';
+			$INC[] = 'htmlarea/core.php/true';
+			$INC[] = 'htmlarea/htmlarea.php/true';
+			$use_htmlarea = true;
+		}
 }
 
-$byday = $bymonth = $bymonthday = $bysetpos = $participants = array ();
-$exceptions = $inclusions = $reminder = array ();
+$byday = $bymonth = $bymonthday = $bysetpos = $participants = array();
+$exceptions = $inclusions = $reminder = array();
 $byweekno = $byyearday = $catList = $catNames = $external_users = $rpt_count = '';
 
 $create_by = $login;
@@ -170,1013 +214,1121 @@ $create_by = $login;
 //We could override it and use $byday_names[$WEEK_START]
 $wkst = 'MO';
 
-$real_user = ( ( ! empty ( $user ) && strlen ( $user ) ) &&
-  ( $is_assistant || $is_admin ) ) ? $user : $login;
+$real_user = ((!empty ($user) && strlen($user)) &&
+	($is_assistant || $is_admin)) ? $user : $login;
 
-print_header ( $INC, '', $BodyX, false, false, false, true );
-
-ob_start ();
-
-if ( $readonly == 'Y' || $is_nonuser )
-  $can_edit = false;
+print_header($INC, '', $BodyX, false, false, false, true);
+ob_start();
+$users = [];
+$res = dbi_execute("SELECT cal_login, CONCAT(COALESCE(cal_firstname, ''), ' ', COALESCE(cal_lastname, '')) FROM webcal_user",  array(), false, false);
+if ($res) {
+	while ($row = mysql_fetch_array($res, MYSQL_NUM)) {
+	    $users[$row[0]] = $row[1];
+	}
+}
+if ($readonly == 'Y' || $is_nonuser)
+	$can_edit = false;
 else
-if ( ! empty ( $id ) && $id > 0 ) {
-  // First see who has access to edit this entry.
-  if ( $is_admin )
-    $can_edit = true;
+	if (!empty ($id) && $id > 0) {
+		// First see who has access to edit this entry.
+		if ($is_admin)
+			$can_edit = true;
 
-  $res = dbi_execute ( 'SELECT cal_create_by, cal_date, cal_time, cal_mod_date,
+		$res = dbi_execute('SELECT cal_create_by, cal_date, cal_time, cal_mod_date,
     cal_mod_time, cal_duration, cal_priority, cal_type, cal_access, cal_name,
     cal_description, cal_group_id, cal_location, cal_due_date, cal_due_time,
-    cal_completed, cal_url FROM webcal_entry WHERE cal_id = ?', array ( $id ) );
-  if ( $res ) {
-    $row = dbi_fetch_row ( $res );
-    // If current user is creator of event, then they can edit.
-    if ( $row[0] == $login )
-      $can_edit = true;
+    cal_completed, cal_url'. ($isEventManage ?  ', cal_number_rooms, cal_number_people, cal_bed_type, 
+    cal_food_package,cal_total_amount, cal_prepayment, cal_check_in_payment, cal_source, cal_supervisor, event_type' : '').' FROM webcal_entry WHERE cal_id = ?', array($id));
+		if ($res) {
+			$row = dbi_fetch_row($res);
+			// If current user is creator of event, then they can edit.
+			if ($row[0] == $login)
+				$can_edit = true;
 
-    $cal_date = ( ! empty ( $override ) && ! empty ( $date )
-      ? $date // Leave $cal_date to what was set in URL with date=YYYYMMDD.
-      : $row[1] );
+			$cal_date = (!empty ($override) && !empty ($date)
+				? $date // Leave $cal_date to what was set in URL with date=YYYYMMDD.
+				: $row[1]);
 
-    $create_by = $row[0];
-    if ( ( $user == $create_by ) && ( $is_assistant || $is_nonuser_admin ) )
-      $can_edit = true;
+			$create_by = $row[0];
+			if (($user == $create_by) && ($is_assistant || $is_nonuser_admin))
+				$can_edit = true;
 
-    $cal_time = sprintf ( "%06d", $row[2] );
-    $due_date = $row[13];
-    $due_time = $row[14];
+			$cal_time = sprintf("%06d", $row[2]);
+			$due_date = $row[13];
+			$due_time = $row[14];
 
-    $calTS = date_to_epoch ( $cal_date . $cal_time );
-    // Don't adjust for All Day entries.
-    if ( $cal_time > 0 || ( $cal_time == 0 && $row[5] != 1440 ) ) {
-      $cal_date = date ( 'Ymd', $calTS );
-      $cal_time = date ( 'His', $calTS );
-    }
-    $hour = floor ( $cal_time / 10000 );
-    $minute = ( $cal_time / 100 ) % 100;
+			$calTS = date_to_epoch($cal_date . $cal_time);
+			// Don't adjust for All Day entries.
+			if ($cal_time > 0 || ($cal_time == 0 && $row[5] != 1440)) {
+				$cal_date = date('Ymd', $calTS);
+				$cal_time = date('His', $calTS);
+			}
+			$hour = floor($cal_time / 10000);
+			$minute = ($cal_time / 100) % 100;
 
-    $dueTS = date_to_epoch ( $due_date . $due_time );
-    $due_date = date ( 'Ymd', $dueTS );
-    $due_time = date ( 'His', $dueTS );
-    $due_hour = floor ( $due_time / 10000 );
-    $due_minute = ( $due_time / 100 ) % 100;
+			$dueTS = date_to_epoch($due_date . $due_time);
+			$due_date = date('Ymd', $dueTS);
+			$due_time = date('His', $dueTS);
+			$due_hour = floor($due_time / 10000);
+			$due_minute = ($due_time / 100) % 100;
 
-    $priority = $row[6];
-    $type = $row[7];
-    $access = $row[8];
-    $name = $row[9];
-    $description = $row[10];
-    $parent = $row[11];
-    $location = $row[12];
-    $completed = ( empty ( $row[15] ) ? date ( 'Ymd' ) : $row[15] );
-    $cal_url = $row[16];
+			$priority = $row[6];
+			$type = $row[7];
+			$access = $row[8];
+			$name = $row[9];
+			$description = $row[10];
+			$parent = $row[11];
+			$location = $row[12];
+			$completed = (empty ($row[15]) ? date('Ymd') : $row[15]);
+			$cal_url = $row[16];
+			$number_rooms = $row[17];
+			$number_people = $row[18];
+			$bed_type = $row[19];
+			$food_package = $row[20];
+			$total_amount = $row[21];
+			$prepayment = $row[22];
+			$check_in_payment = $row[23];
+			$source = $row[24];
+			$supervisor = $row[25];
+			$event_type = (int)$row[26];
+//			var_dump($event_type);exit();
 
-    // What kind of entry are we dealing with?
-    if ( strpos ( 'EM', $type ) !== false )
-      $eType = 'event';
-    elseif ( strpos ( 'JO', $type ) !== false )
-      $eType = 'journal';
-    elseif ( strpos ( 'NT', $type ) !== false )
-      $eType = 'task';
+			// What kind of entry are we dealing with?
+			if (strpos('EM', $type) !== false)
+				$eType = 'event';
+			elseif (strpos('JO', $type) !== false)
+				$eType = 'journal';
+			elseif (strpos('NT', $type) !== false)
+				$eType = 'task';
 
-    // Public access has no access to tasks.
-    // translate ( 'You are not authorized to edit this task' )
-    if ( $login == '__public__' && $eType == 'task' )
-      echo str_replace ( 'XXX', translate ( 'task' ),
-        translate ( 'You are not authorized to edit this XXX.' ) );
+			// Public access has no access to tasks.
+			// translate ( 'You are not authorized to edit this task' )
+			if ($login == '__public__' && $eType == 'task')
+				echo str_replace('XXX', translate('task'),
+					translate('You are not authorized to edit this XXX.'));
 
-    // Check UAC.
-    if ( access_is_enabled () )
-      $can_edit =
-      access_user_calendar ( 'edit', $create_by, $login, $type, $access );
+			// Check UAC.
+			if (access_is_enabled())
+				$can_edit =
+					access_user_calendar('edit', $create_by, $login, $type, $access);
 
-    $day = $cal_date % 100;
-    $month = ( $cal_date / 100 ) % 100;
-    $year = intval ( $cal_date / 10000 );
+			$day = $cal_date % 100;
+			$month = ($cal_date / 100) % 100;
+			$year = intval($cal_date / 10000);
 
-    $time = $row[2];
+			$time = $row[2];
 
-    if ( $time >= 0 )
-      $duration = $row[5];
-    else {
-      $duration = '';
-      $hour = -1;
-    }
+			if ($time >= 0)
+				$duration = $row[5];
+			else {
+				$duration = '';
+				$hour = -1;
+			}
 
-    // Check for repeating event info...
-    // but not if we're overriding a single entry of an already repeating event...
-    // confusing, eh?
-    if ( ! empty ( $override ) ) {
-      $rpt_end = 0;
-      $rpt_end_date = $cal_date;
-      $rpt_freq = 1;
-      $rpt_type = 'none';
-    } else {
-      $res = dbi_execute ( 'SELECT cal_id, cal_type, cal_end, cal_endtime,
+			// Check for repeating event info...
+			// but not if we're overriding a single entry of an already repeating event...
+			// confusing, eh?
+			if (!empty ($override)) {
+				$rpt_end = 0;
+				$rpt_end_date = $cal_date;
+				$rpt_freq = 1;
+				$rpt_type = 'none';
+			} else {
+				$res = dbi_execute('SELECT cal_id, cal_type, cal_end, cal_endtime,
         cal_frequency, cal_byday, cal_bymonth, cal_bymonthday, cal_bysetpos,
         cal_byweekno, cal_byyearday, cal_wkst, cal_count
-        FROM webcal_entry_repeats WHERE cal_id = ?', array ( $id ) );
-      if ( $res ) {
-        if ( $row = dbi_fetch_row ( $res ) ) {
-          $rpt_type = $row[1];
-          $rpt_end = ( $row[2] > 0 ? date_to_epoch ( $row[2] . $row[3] ) : 0 );
+        FROM webcal_entry_repeats WHERE cal_id = ?', array($id));
+				if ($res) {
+					if ($row = dbi_fetch_row($res)) {
+						$rpt_type = $row[1];
+						$rpt_end = ($row[2] > 0 ? date_to_epoch($row[2] . $row[3]) : 0);
 
-          if ( empty ( $row[2] ) ) {
-            $rpt_end_date = $cal_date;
-            $rpt_end_time = $cal_time;
-          } else {
-            $rpt_endTS = date_to_epoch ( $row[2] . $row[3] );
-            $rpt_end_date = date ( 'Ymd', $rpt_endTS );
-            $rpt_end_time = date ( 'His', $rpt_endTS );
-          }
-          $rpt_freq = $row[4];
-          if ( ! empty ( $row[5] ) )
-            $byday = explode ( ',', $row[5] );
+						if (empty ($row[2])) {
+							$rpt_end_date = $cal_date;
+							$rpt_end_time = $cal_time;
+						} else {
+							$rpt_endTS = date_to_epoch($row[2] . $row[3]);
+							$rpt_end_date = date('Ymd', $rpt_endTS);
+							$rpt_end_time = date('His', $rpt_endTS);
+						}
+						$rpt_freq = $row[4];
+						if (!empty ($row[5]))
+							$byday = explode(',', $row[5]);
 
-          $bydayStr = $row[5];
-          if ( ! empty ( $row[6] ) )
-            $bymonth = explode ( ',', $row[6] );
+						$bydayStr = $row[5];
+						if (!empty ($row[6]))
+							$bymonth = explode(',', $row[6]);
 
-          if ( ! empty ( $row[7] ) )
-            $bymonthday = explode ( ',', $row[7] );
+						if (!empty ($row[7]))
+							$bymonthday = explode(',', $row[7]);
 
-          $bymonthdayStr = $row[7];
-          if ( ! empty ( $row[8] ) )
-            $bysetpos = explode ( ',', $row[8] );
+						$bymonthdayStr = $row[7];
+						if (!empty ($row[8]))
+							$bysetpos = explode(',', $row[8]);
 
-          $bysetposStr = $row[8];
-          $byweekno = $row[9];
-          $byyearday = $row[10];
-          $wkst = $row[11];
-          $rpt_count = $row[12];
+						$bysetposStr = $row[8];
+						$byweekno = $row[9];
+						$byyearday = $row[10];
+						$wkst = $row[11];
+						$rpt_count = $row[12];
 
-          // Check to see if Weekends Only is applicable.
-          $weekdays_only = ( $rpt_type == 'daily' && $byday == 'MO,TU,WE,TH,FR' );
-        }
-        dbi_free_result ( $res );
-      }
-    }
+						// Check to see if Weekends Only is applicable.
+						$weekdays_only = ($rpt_type == 'daily' && $byday == 'MO,TU,WE,TH,FR');
+					}
+					dbi_free_result($res);
+				}
+			}
 
-    $res = dbi_execute ( 'SELECT cal_login, cal_percent, cal_status
-      FROM webcal_entry_user WHERE cal_id = ?', array ( $id ) );
-    if ( $res ) {
-      while ( $row = dbi_fetch_row ( $res ) ) {
-        $overall_percent[] = $row;
-        if ( $login == $row[0] || ( $is_admin && $user == $row[0] ) ) {
-          $task_percent = $row[1];
-          $task_status = $row[2];
-        }
-      }
-      dbi_free_result ( $res );
-    }
+			$res = dbi_execute('SELECT cal_login, cal_percent, cal_status
+      FROM webcal_entry_user WHERE cal_id = ?', array($id));
+			if ($res) {
+				while ($row = dbi_fetch_row($res)) {
+					$overall_percent[] = $row;
+					if ($login == $row[0] || ($is_admin && $user == $row[0])) {
+						$task_percent = $row[1];
+						$task_status = $row[2];
+					}
+				}
+				dbi_free_result($res);
+			}
 
-    // Determine if Expert mode needs to be set.
-    $expert_mode = ( count ( $byday ) || count ( $bymonth ) ||
-      count ( $bymonthday ) || count ( $bysetpos ) ||
-      isset ( $byweekno ) || isset ( $byyearday ) || isset ( $rpt_count ) );
+			// Determine if Expert mode needs to be set.
+			$expert_mode = (count($byday) || count($bymonth) ||
+				count($bymonthday) || count($bysetpos) ||
+				isset ($byweekno) || isset ($byyearday) || isset ($rpt_count));
 
-    // Get Repeat Exceptions.
-    $res = dbi_execute ( 'SELECT cal_date, cal_exdate
-      FROM webcal_entry_repeats_not WHERE cal_id = ?', array ( $id ) );
-    if ( $res ) {
-      while ( $row = dbi_fetch_row ( $res ) ) {
-        if ( $row[1] == 1 )
-          $exceptions[] = $row[0];
-        else
-          $inclusions[] = $row[0];
-      }
-      dbi_free_result ( $res );
-    }
-  }
-  if ( $CATEGORIES_ENABLED == 'Y' ) {
-    $catById = get_categories_by_id ( $id, $real_user, true );
-    if ( ! empty ( $catById ) ) {
-      $catNames = implode ( ', ', $catById );
-      $catList = implode ( ',', array_keys ( $catById ) );
-    }
-  } //end CATEGORIES_ENABLED test
+			// Get Repeat Exceptions.
+			$res = dbi_execute('SELECT cal_date, cal_exdate
+      FROM webcal_entry_repeats_not WHERE cal_id = ?', array($id));
+			if ($res) {
+				while ($row = dbi_fetch_row($res)) {
+					if ($row[1] == 1)
+						$exceptions[] = $row[0];
+					else
+						$inclusions[] = $row[0];
+				}
+				dbi_free_result($res);
+			}
+		}
+		if ($CATEGORIES_ENABLED == 'Y') {
+			$catById = get_categories_by_id($id, $real_user, true);
+			if (!empty ($catById)) {
+				$catNames = implode(', ', $catById);
+				$catList = implode(',', array_keys($catById));
+			}
+		} //end CATEGORIES_ENABLED test
 
-  // Get reminders.
-  $reminder = getReminders ( $id );
-  $reminder_offset = ( empty ( $reminder ) ? 0 : $reminder['offset'] );
-    
-    $rem_status = ( count ( $reminder ));
-  $rem_use_date = ( ! empty ( $reminder['date'] ) );
+		// Get reminders.
+		$reminder = getReminders($id);
+		$reminder_offset = (empty ($reminder) ? 0 : $reminder['offset']);
 
-  // Get participants.
-  $res = dbi_execute ( 'SELECT cal_login, cal_status FROM webcal_entry_user WHERE cal_id = ?
-    AND cal_status IN ( \'A\', \'W\' )', array ( $id ) );
-  if ( $res ) {
-    while ( $row = dbi_fetch_row ( $res ) ) {
-      $participants[$row[0]] = 1;
-      $selectedStatus[$row[0]] = $row[1];
-    }
-    dbi_free_result ( $res );
-  }
-  // Not allowed for tasks or journals.
-  if ( $eType == 'event' && !
-    empty ( $ALLOW_EXTERNAL_USERS ) && $ALLOW_EXTERNAL_USERS == 'Y' )
-    $external_users = event_get_external_users ( $id );
-} else {
-  // ##########   New entry   ################
-  $id = 0; // To avoid warnings below about use of undefined var.
+		$rem_status = (count($reminder));
+		$rem_use_date = (!empty ($reminder['date']));
 
-  // We'll use $WORK_DAY_START_HOUR and $WORK_DAY_END_HOUR
-  // as our starting and due times.
-  $cal_time = $WORK_DAY_START_HOUR . '0000';
-  $completed = '';
-  $due_hour = $WORK_DAY_END_HOUR;
-  $due_minute = $task_percent = 0;
-  $due_time = $WORK_DAY_END_HOUR . '0000';
-  $overall_percent = array ();
+		// Get participants.
+		$res = dbi_execute('SELECT cal_login, cal_status FROM webcal_entry_user WHERE cal_id = ?
+    AND cal_status IN ( \'A\', \'W\' )', array($id));
+		if ($res) {
+			while ($row = dbi_fetch_row($res)) {
+				$participants[$row[0]] = 1;
+				$selectedStatus[$row[0]] = $row[1];
+			}
+			dbi_free_result($res);
+		}
+		// Not allowed for tasks or journals.
+		if ($eType == 'event' && !
+			empty ($ALLOW_EXTERNAL_USERS) && $ALLOW_EXTERNAL_USERS == 'Y')
+			$external_users = event_get_external_users($id);
+	} else {
+		// ##########   New entry   ################
+		$id = 0; // To avoid warnings below about use of undefined var.
 
-  // Get category if passed in URL as cat_id.
-  $cat_id = getValue ( 'cat_id', '-?[0-9,\-]*', true );
-  if ( ! empty ( $cat_id ) ) {
-    $res = dbi_execute ( 'SELECT cat_name FROM webcal_categories
+		// We'll use $WORK_DAY_START_HOUR and $WORK_DAY_END_HOUR
+		// as our starting and due times.
+		$cal_time = $WORK_DAY_START_HOUR . '0000';
+		$completed = '';
+		$due_hour = $WORK_DAY_END_HOUR;
+		$due_minute = $task_percent = 0;
+		$due_time = $WORK_DAY_END_HOUR . '0000';
+		$overall_percent = array();
+
+		// Get category if passed in URL as cat_id.
+		$cat_id = getValue('cat_id', '-?[0-9,\-]*', true);
+		if (!empty ($cat_id)) {
+			$res = dbi_execute('SELECT cat_name FROM webcal_categories
       WHERE cat_id = ? AND ( cat_owner = ? OR cat_owner IS NULL )',
-      array ( $cat_id, $real_user ) );
-    if ( $res ) {
-      $row = dbi_fetch_row ( $res );
-      $catNames = $row[0];
-      $catList = $cat_id;
-    }
-  }
+				array($cat_id, $real_user));
+			if ($res) {
+				$row = dbi_fetch_row($res);
+				$catNames = $row[0];
+				$catList = $cat_id;
+			}
+		}
 
-  // Reminder settings.
-  $reminder_offset = ( $REMINDER_WITH_DATE == 'N' ? $REMINDER_OFFSET : 0 );
+		// Reminder settings.
+		$reminder_offset = ($REMINDER_WITH_DATE == 'N' ? $REMINDER_OFFSET : 0);
 
-    $rem_status = ( $REMINDER_DEFAULT == 'Y' );
-  $rem_use_date = ( $reminder_offset == 0 && $REMINDER_WITH_DATE == 'Y' );
-            
-  if ( $eType == 'task' )
-    $hour = $WORK_DAY_START_HOUR;
+		$rem_status = ($REMINDER_DEFAULT == 'Y');
+		$rem_use_date = ($reminder_offset == 0 && $REMINDER_WITH_DATE == 'Y');
 
-  // Anything other then testing for strlen breaks either hour=0 or no hour in URL.
-  if ( strlen ( $hour ) )
-    $time = $hour * 100;
-  else
-    $hour = $time = -1;
+		if ($eType == 'task')
+			$hour = $WORK_DAY_START_HOUR;
 
-  if ( ! empty ( $defusers ) ) {
-    $tmp_ar = explode ( ',', $defusers );
-    for ( $i = 0, $cnt = count ( $tmp_ar ); $i < $cnt; $i++ ) {
-      $participants[$tmp_ar[$i]] = 1;
-    }
-  }
+		// Anything other then testing for strlen breaks either hour=0 or no hour in URL.
+		if (strlen($hour))
+			$time = $hour * 100;
+		else
+			$hour = $time = -1;
 
-  //Add the logged in user if none other supplied
-  if ( count ( $participants )  == 0 )
-    $participants[$login] = 1;
+		if (!empty ($defusers)) {
+			$tmp_ar = explode(',', $defusers);
+			for ($i = 0, $cnt = count($tmp_ar); $i < $cnt; $i++) {
+				$participants[$tmp_ar[$i]] = 1;
+			}
+		}
 
-  if ( $readonly == 'N' ) {
-    // Is public allowed to add events?
-    if ( $login == '__public__'  && $PUBLIC_ACCESS_CAN_ADD != 'Y' )
-        $can_edit = false;
-    else
-      $can_edit = true;
-  }
-}
-$dateYmd = date ( 'Ymd' );
+		//Add the logged in user if none other supplied
+		if (count($participants) == 0)
+			$participants[$login] = 1;
+
+		if ($readonly == 'N') {
+			// Is public allowed to add events?
+			if ($login == '__public__' && $PUBLIC_ACCESS_CAN_ADD != 'Y')
+				$can_edit = false;
+			else
+				$can_edit = true;
+		}
+	}
+$dateYmd = date('Ymd');
 $thisday = $day;
 $thismonth = $month;
 $thisyear = $year;
-if ( empty ( $rpt_type ) || ! $rpt_type )
-  $rpt_type = 'none';
+if (empty ($rpt_type) || !$rpt_type)
+	$rpt_type = 'none';
 
 // Avoid error for using undefined vars.
-if ( ! isset ( $hour ) && $hour != 0 )
-  $hour = -1;
+if (!isset ($hour) && $hour != 0)
+	$hour = -1;
 else
-if ( isset ( $hour ) && $hour >= 0 )
-  $cal_time = ( $hour * 10000 ) + ( isset ( $minute ) ? $minute * 100 : 0 );
+	if (isset ($hour) && $hour >= 0)
+		$cal_time = ($hour * 10000) + (isset ($minute) ? $minute * 100 : 0);
 
-if ( empty ( $access ) )
-  $access = '';
+if (empty ($access))
+	$access = '';
 
-if ( empty ( $cal_url ) )
-  $cal_url = '';
+if (empty ($cal_url))
+	$cal_url = '';
 
-if ( empty ( $description ) || $description == '<br />' )
-  $description = '';
+if (empty ($description) || $description == '<br />')
+	$description = '';
 
-if ( empty ( $duration ) )
-  $duration = 0;
+if (empty ($duration))
+	$duration = 0;
 
-if ( $duration == 1440 && $time == 0 ) {
-  $duration = $hour = $minute = '';
-  $allday = 'Y';
+if ($duration == 1440 && $time == 0) {
+	$duration = $hour = $minute = '';
+	$allday = 'Y';
 } else
-  $allday = 'N';
+	$allday = 'N';
 
-if ( empty ( $location ) )
-  $location = '';
+if (empty ($location))
+	$location = '';
 
-if ( empty ( $name ) )
-  $name = '';
+if (empty ($name))
+	$name = '';
 
-if ( empty ( $priority ) )
-  $priority = 5;
+if (empty ($priority))
+	$priority = 5;
 
-if ( empty ( $rpt_end_date ) )
-  $rpt_end_date = 0;
+if (empty ($rpt_end_date))
+	$rpt_end_date = 0;
 
-if ( empty ( $rpt_end_time ) )
-  $rpt_end_time = 0;
+if (empty ($rpt_end_time))
+	$rpt_end_time = 0;
 
-if ( empty ( $rpt_freq ) )
-  $rpt_freq = 0;
+if (empty ($rpt_freq))
+	$rpt_freq = 0;
 
-if ( empty ( $cal_date ) ) {
-  $cal_date = ( ! empty ( $date ) && $eType != 'task' ? $date : $dateYmd );
+if (empty ($cal_date)) {
+	$cal_date = (!empty ($date) && $eType != 'task' ? $date : $dateYmd);
 
-  if ( empty ( $due_date ) )
-    $due_date = $dateYmd;
+	if (empty ($due_date))
+		$due_date = $dateYmd;
 }
-if ( empty ( $thisyear ) )
-  $thisdate = $dateYmd;
+if (empty ($thisyear))
+	$thisdate = $dateYmd;
 else {
-  $thisdate = sprintf ( "%04d%02d%02d", $thisyear,
-    empty ( $thismonth ) ? date ( 'm' ) : $thismonth,
-    empty ( $thisday ) ? date ( 'd' ) : $thisday );
+	$thisdate = sprintf("%04d%02d%02d", $thisyear,
+		empty ($thismonth) ? date('m') : $thismonth,
+		empty ($thisday) ? date('d') : $thisday);
 }
 
-if ( empty ( $cal_date ) || ! $cal_date )
-  $cal_date = $thisdate;
+if (empty ($cal_date) || !$cal_date)
+	$cal_date = $thisdate;
 
-if ( empty ( $due_date ) || ! $due_date )
-  $due_date = $thisdate;
+if (empty ($due_date) || !$due_date)
+	$due_date = $thisdate;
+
+if($isEventManage){
+	/*
+	if (empty ($number_rooms))
+		$number_rooms = '';
+
+	if (empty ($number_people))
+		$number_people = '';
+
+	if (empty ($bed_type))
+		$bed_type = '';
+
+	if (empty ($food_package))
+		$food_package = '';
+
+	if (empty ($total_amount))
+		$total_amount = '';
+
+	if (empty ($prepayment))
+		$prepayment = '';
+
+	if (empty ($check_in_payment))
+		$check_in_payment = '';
+
+	if (empty ($source))
+		$source = '';
+
+	if (empty ($supervisor))
+		$supervisor = '';
+
+	*/
+}
 
 // Setup to display user's timezone difference if Admin or Assistant.
 // Even though event is stored in GMT,
 // an Assistant may need to know that the boss is in a different Timezone.
-if ( $is_assistant || $is_admin && ! empty ( $user ) ) {
-  $tz_offset = date ( 'Z', date_to_epoch ( $cal_date . $cal_time ) );
-  $user_TIMEZONE = get_pref_setting ( $user, 'TIMEZONE' );
-  set_env ( 'TZ', $user_TIMEZONE );
-  $user_tz_offset = date ( 'Z', date_to_epoch ( $cal_date . $cal_time ) );
-  if ( $tz_offset != $user_tz_offset ) { // Different TZ_Offset.
-    user_load_variables ( $user, 'temp' );
-    $tz_diff = ( $user_tz_offset - $tz_offset ) / 3600;
-    $abs_diff = abs ( $tz_diff );
-    // translate ( 'is in a different timezone than you are. Currently' )
-    // translate ( 'hour ahead of you' ) translate ( 'hour behind you' )
-    // translate ( 'hours ahead of you' ) translate ( 'hours behind you' )
-    // translate ( 'XXX is in a different timezone (ahead)' )
-    // translate ( 'XXX is in a different timezone (behind)' )
-    // Line breaks in translates below are to bypass update_translation.pl.
-    $TZ_notice = str_replace ( 'XXX',
-      array ( $tempfullname,
-        // TODO show hh:mm instead of abs.
-        $abs_diff . ' ' . translate ( 'hour'
-           . ( $abs_diff == 1 ? '' : 's' ) ),
-        translate ( 'Time entered here is based on your Timezone.' ) ),
-      translate ( 'XXX is in a different timezone ('
-         . ( $tz_diff > 0 ? 'ahead)' : 'behind)' ) ) );
-  }
-  // Return to $login TIMEZONE.
-  set_env ( 'TZ', $TIMEZONE );
+if ($is_assistant || $is_admin && !empty ($user)) {
+	$tz_offset = date('Z', date_to_epoch($cal_date . $cal_time));
+	$user_TIMEZONE = get_pref_setting($user, 'TIMEZONE');
+	set_env('TZ', $user_TIMEZONE);
+	$user_tz_offset = date('Z', date_to_epoch($cal_date . $cal_time));
+	if ($tz_offset != $user_tz_offset) { // Different TZ_Offset.
+		user_load_variables($user, 'temp');
+		$tz_diff = ($user_tz_offset - $tz_offset) / 3600;
+		$abs_diff = abs($tz_diff);
+		// translate ( 'is in a different timezone than you are. Currently' )
+		// translate ( 'hour ahead of you' ) translate ( 'hour behind you' )
+		// translate ( 'hours ahead of you' ) translate ( 'hours behind you' )
+		// translate ( 'XXX is in a different timezone (ahead)' )
+		// translate ( 'XXX is in a different timezone (behind)' )
+		// Line breaks in translates below are to bypass update_translation.pl.
+		$TZ_notice = str_replace('XXX',
+			array($tempfullname,
+				// TODO show hh:mm instead of abs.
+				$abs_diff . ' ' . translate('hour'
+					. ($abs_diff == 1 ? '' : 's')),
+				translate('Time entered here is based on your Timezone.')),
+			translate('XXX is in a different timezone ('
+				. ($tz_diff > 0 ? 'ahead)' : 'behind)')));
+	}
+	// Return to $login TIMEZONE.
+	set_env('TZ', $TIMEZONE);
 }
 
-$eType_label = ' ( ' . translate ( $eType ) . ' )';
+$eType_label = ' ( ' . translate($eType) . ' )';
 
 echo '
-    <h2>' . ( $id ? translate ( 'Edit Entry' ) : translate ( 'Add Entry' ) )
- . $eType_label . '&nbsp;<img src="images/help.gif" alt="' . translate ( 'Help' )
- . '" class="help" onclick="window.open( \'help_edit_entry.php'
- . ( empty ( $id ) ? '?add=1' : '' )
- . '\', \'cal_help\', \'dependent,menubar,scrollbars,height=400,width=400,'
- . 'innerHeight=420,outerWidth=420\' );" /></h2>';
+    <h2>' . ($id ? translate('Edit Entry') : translate('Add Entry'))
+	. $eType_label . '&nbsp;<img src="images/help.gif" alt="' . translate('Help')
+	. '" class="help" onclick="window.open( \'help_edit_entry.php'
+	. (empty ($id) ? '?add=1' : '')
+	. '\', \'cal_help\', \'dependent,menubar,scrollbars,height=400,width=400,'
+	. 'innerHeight=420,outerWidth=420\' );" /></h2>';
 
-if ( $can_edit ) {
-  $tabs_ar = array ( 'details', translate ( 'Details' ) );
-  if ( $DISABLE_PARTICIPANTS_FIELD != 'Y' ) {
-    $tabs_ar[] = 'participants';
-    $tabs_ar[] = translate ( 'Participants' );
-  }
-  if ( $DISABLE_REPEATING_FIELD != 'Y' ) {
-    $tabs_ar[] = 'pete';
-    $tabs_ar[] = translate ( 'Repeat' );
-  }
-  if ( $DISABLE_REMINDER_FIELD != 'Y' ) {
-    $tabs_ar[] = 'reminder';
-    $tabs_ar[] = translate ( 'Reminders' );
-  }
+if ($can_edit) {
+	$tabs_ar = array('details', translate('Details'));
+	if ($DISABLE_PARTICIPANTS_FIELD != 'Y') {
+		$tabs_ar[] = 'participants';
+		$tabs_ar[] = translate('Participants');
+	}
+	if ($DISABLE_REPEATING_FIELD != 'Y') {
+		$tabs_ar[] = 'pete';
+		$tabs_ar[] = translate('Repeat');
+	}
+	if ($DISABLE_REMINDER_FIELD != 'Y') {
+		$tabs_ar[] = 'reminder';
+		$tabs_ar[] = translate('Reminders');
+	}
 
-  $tabs = '';
-  for ( $i = 0, $cnt = count ( $tabs_ar ); $i < $cnt; $i++ ) {
-    $tabs .= '
+	$tabs = '';
+	for ($i = 0, $cnt = count($tabs_ar); $i < $cnt; $i++) {
+		$tabs .= '
         <span class="tab'
-     . ( $i > 0 ? 'bak' : 'for' )
-     . '" id="tab_' . $tabs_ar[$i]
-     . '"><a href="#tab' . $tabs_ar[$i] . '" onclick="return showTab( \''
-     . $tabs_ar[$i] . '\' )">' . $tabs_ar[++$i] . '</a></span>';
-  }
-  echo '
+			. ($i > 0 ? 'bak' : 'for')
+			. '" id="tab_' . $tabs_ar[$i]
+			. '"><a href="#tab' . $tabs_ar[$i] . '" onclick="return showTab( \''
+			. $tabs_ar[$i] . '\' )">' . $tabs_ar[++$i] . '</a></span>';
+	}
+	echo '
     <form action="edit_entry_handler.php" method="post" name="editentryform" '
-   . 'id="editentryform">
+		. 'id="editentryform">
       <input type="hidden" name="eType" value="' . $eType . '" />'
-   . ( ! empty ( $id ) && ( empty ( $copy ) || $copy != '1' ) ? '
-      <input type="hidden" name="cal_id" value="' . $id . '" />' : '' )
-  /* We need an additional hidden input field. */ . '
+		. (!empty ($id) && (empty ($copy) || $copy != '1') ? '
+      <input type="hidden" name="cal_id" value="' . $id . '" />' : '')
+		/* We need an additional hidden input field. */ . '
       <input type="hidden" name="entry_changed" value="" />'
-  // Are we overriding an entry from a repeating event...
-  . ( empty ( $override ) ? '' : '
+		// Are we overriding an entry from a repeating event...
+		. (empty ($override) ? '' : '
       <input type="hidden" name="override" value="1" />
-      <input type="hidden" name="override_date" value="' . $cal_date . '" />' )
-  // If assistant, need to remember boss = user.
-  . ( $is_assistant || $is_nonuser_admin || ! empty ( $user ) ? '
-      <input type="hidden" name="user" value="' . $user . '" />' : '' )
-  // If has cal_group_id was set, need to set parent = $parent.
-  . ( empty ( $parent ) ? '' : '
-      <input type="hidden" name="parent" value="' . $parent . '" />' ) . '
+      <input type="hidden" name="override_date" value="' . $cal_date . '" />')
+		// If assistant, need to remember boss = user.
+		. ($is_assistant || $is_nonuser_admin || !empty ($user) ? '
+      <input type="hidden" name="user" value="' . $user . '" />' : '')
+		// If has cal_group_id was set, need to set parent = $parent.
+		. (empty ($parent) ? '' : '
+      <input type="hidden" name="parent" value="' . $parent . '" />') . '
 
-<!-- TABS -->' . ( $useTabs ? '
+<!-- TABS -->' . ($useTabs ? '
       <div id="tabs">' . $tabs . '
-      </div>' : '' ) . '
+      </div>' : '') . '
 
-<!-- TABS BODY -->' . ( $useTabs ? '
+<!-- TABS BODY -->' . ($useTabs ? '
       <div id="tabscontent">
 <!-- DETAILS -->
         <a name="tabdetails"></a>
         <div id="tabscontent_details">' : '
       <fieldset>
-        <legend>' . translate ( 'Details' ) . '</legend>' ) . '
-          <table border="0" summary="">
+        <legend>' . translate('Details') . '</legend>') . '
+          <table border="0" summary="">';
+	if ($isEventManage) echo '
             <tr>
-              <td style="width:14%;" class="tooltip" title="'
-   . tooltip ( 'brief-description-help' ) . '"><label for="entry_brief">'
-   . translate ( 'Brief Description' ) . ':</label></td>
-              <td colspan="2"><input type="text" name="name" id="entry_brief" '
-   . 'size="25" value="' . htmlspecialchars ( $name ) . '" /></td>
+              <td style="width:30%;"><label for="entry_brief">Type:</label></td>
+              <td colspan="2"><select name="event_type" id="reservationSelect">
+              <option selected disabled>Please choose type</option>'.event_dropdown_options($event_type, EVENT_TYPES).'
+            </select></td>
             </tr>
-            <tr>
+            <tr class="event-row" id="dateFromTr">
+              <td class="tooltip" title="' . tooltip('date-help')
+		. '"><label>'
+		. translate('Date')
+		. ':</label></td>
+              <td colspan="2">' . date_selection('', $cal_date) . '</td>
+            </tr>
+            <tr class="event-row" id="eventName">
+              <td style="width:14%;" class="tooltip" title="'
+		. tooltip('brief-description-help') . '"><label for="entry_brief" id="eventNameLabel">Guest name:</label></td>
+              <td colspan="2"><input type="text" name="name" id="entry_brief" '
+		. 'size="25" value="' . htmlspecialchars($name) . '" /></td>
+            </tr>
+            <tr class="event-row individual">
+            	<td><label>Number of rooms:</label></td>
+            	<td><select name="number_rooms">' . event_dropdown_options($number_rooms, NUMBER_ROOMS) . '</select></td>
+            </tr>
+            <tr class="event-row">
+            	<td><label>Number of people:</label></td>
+            	<td><select name="number_people">' . event_dropdown_options($number_people, NUMBER_PEOPLE) . '</select></td>
+            </tr>
+            <tr class="event-row individual">
+            	<td><label>Bed type:</label></td>
+            	<td><select name="bed_type">' . event_dropdown_options($bed_type, BED_TYPES) . '</select></td>
+            </tr>
+            <tr class="event-row">
+            	<td><label>Food package:</label></td>
+            	<td><select name="food_package">' . event_dropdown_options($food_package, FOOD_PACKAGES) . '</select></td>
+            </tr>
+            <tr class="event-row individual">
+            	<td><label>Total amount:</label></td>
+            	<td><input type="number" name="total_amount" value="' . $total_amount . '"></td>
+            </tr>
+            <tr class="event-row individual">
+            	<td><label>Prepayment:</label></td>
+            	<td><input type="number" name="prepayment" value="' . $prepayment . '"></td>
+            </tr>
+            <tr class="event-row individual">
+            	<td><label>Check in payment:</label></td>
+            	<td><input type="number" name="check_in_payment" value="' . $check_in_payment . '"></td>
+            </tr>
+            <tr class="event-row individual">
+            	<td><label>Source:</label></td>
+            	<td><select name="source">' . event_dropdown_options($source, SOURCES) . '</select></td>
+            </tr>
+            <tr class="event-row group">
+            	<td><label>Supervisor:</label></td>
+            	<td><select name="supervisor">' . event_dropdown_options($supervisor, $users) . '</select></td>
+            </tr>
+            ';
+	else {
+		echo '<tr>
+              <td style="width:14%;" class="tooltip" title="'
+			. tooltip('brief-description-help') . '"><label for="entry_brief">'
+			. translate('Brief Description') . ':</label></td>
+              <td colspan="2"><input type="text" name="name" id="entry_brief" '
+			. 'size="25" value="' . htmlspecialchars($name) . '" /></td>
+            </tr>';
+	}
+	echo '<tr class="' . ($isEventManage ? "event-row" : "") . '">
               <td class="tooltip aligntop" title="'
-   . tooltip ( 'full-description-help' ) . '"><label for="entry_full">'
-   . translate ( 'Full Description' ) . ':</label></td>
+		. tooltip('full-description-help') . '"><label for="entry_full">'
+		. translate($isEventManage ? 'Additional notes': 'Full Description') . ':</label></td>
               <td><textarea name="description" id="entry_full" rows="'
-   . $textareasize . '" cols="50"' . '>' . htmlspecialchars ( $description )
-   . '</textarea></td>' . ( $use_fckeditor || $use_htmlarea ? '
+		. $textareasize . '" cols="50"' . '>' . htmlspecialchars($description)
+		. '</textarea></td>' . ($use_fckeditor || $use_htmlarea ? '
             </tr>
             <tr>
               <td colspan="2"' : '
-              <td' ) . ' class="aligntop">'
-   . ( ! empty ( $categories ) || $DISABLE_ACCESS_FIELD != 'Y' ||
-    ( $DISABLE_PRIORITY_FIELD != 'Y' )
-    /* New table for extra fields. */ ? '
-                <table border="0" width="90%" summary="">' : '' )
-   . ( $DISABLE_ACCESS_FIELD != 'Y' ? '
+              <td') . ' class="aligntop">'
+		. (!empty ($categories) || $DISABLE_ACCESS_FIELD != 'Y' ||
+		($DISABLE_PRIORITY_FIELD != 'Y')
+			/* New table for extra fields. */ ? '
+                <table border="0" width="90%" summary="">' : '')
+		. ($DISABLE_ACCESS_FIELD != 'Y' ? '
                   <tr>
-                    <td class="tooltip" title="' . tooltip ( 'access-help' )
-     . '"><label for="entry_access">' . translate ( 'Access' ) . ':</label></td>
+                    <td class="tooltip" title="' . tooltip('access-help')
+			. '"><label for="entry_access">' . translate('Access') . ':</label></td>
                     <td width="80%">
                       <select name="access" id="entry_access">
-                        <option value="P"' . ( $access == 'P' || !
-      strlen ( $access ) ? $selected : '' ) . '>' . translate ( 'Public' )
-     . '</option>
-                        <option value="R"' . ( $access == 'R' ? $selected : '' )
-     . '>' . translate ( 'Private' ) . '</option>
-                        <option value="C"' . ( $access == 'C' ? $selected : '' )
-     . '>' . translate ( 'Confidential' ) . '</option>
+                        <option value="P"' . ($access == 'P' || !
+			strlen($access) ? $selected : '') . '>' . translate('Public')
+			. '</option>
+                        <option value="R"' . ($access == 'R' ? $selected : '')
+			. '>' . translate('Private') . '</option>
+                        <option value="C"' . ($access == 'C' ? $selected : '')
+			. '>' . translate('Confidential') . '</option>
                       </select>
                     </td>
-                  </tr>' : '' );
+                  </tr>' : '');
 
-  if ( $DISABLE_PRIORITY_FIELD != 'Y' ) {
-    echo '
+	if ($DISABLE_PRIORITY_FIELD != 'Y') {
+		echo '
                   <tr>
-                    <td class="tooltip" title="' . tooltip ( 'priority-help' )
-     . '"><label for="entry_prio">' . translate ( 'Priority' )
-     . ':&nbsp;</label></td>
+                    <td class="tooltip" title="' . tooltip('priority-help')
+			. '"><label for="entry_prio">' . translate('Priority')
+			. ':&nbsp;</label></td>
                     <td>
                       <select name="priority" id="entry_prio">';
-    $pri = array ( '',
-      translate ( 'High' ),
-      translate ( 'Medium' ),
-      translate ( 'Low' ) );
+		$pri = array('',
+			translate('High'),
+			translate('Medium'),
+			translate('Low'));
 
-    for ( $i = 1; $i <= 9; $i++ ) {
-      echo '
+		for ($i = 1; $i <= 9; $i++) {
+			echo '
                         <option value="' . $i . '"'
-       . ( $priority == $i ? $selected : '' )
-       . '>' . $i . '-' . $pri[ceil ( $i / 3 )] . '</option>';
-    }
-    echo '
+				. ($priority == $i ? $selected : '')
+				. '>' . $i . '-' . $pri[ceil($i / 3)] . '</option>';
+		}
+		echo '
                       </select>
                     </td>
                   </tr>';
-  }
-  echo ( ! empty ( $categories ) && $CATEGORIES_ENABLED == 'Y' ? '
+	}
+	echo (!empty ($categories) && $CATEGORIES_ENABLED == 'Y' ? '
                   <tr>
-                    <td class="tooltip" title="' . tooltip ( 'category-help' )
-     . '" valign="top">
-                      <label for="entry_categories">' . translate ( 'Category' )
-     . ':<br /></label>
-                      <input type="button" value="' . translate ( 'Edit' )
-     . '" onclick="editCats( event )" />
+                    <td class="tooltip" title="' . tooltip('category-help')
+			. '" valign="top">
+                      <label for="entry_categories">' . translate('Category')
+			. ':<br /></label>
+                      <input type="button" value="' . translate('Edit')
+			. '" onclick="editCats( event )" />
                     </td>
                     <td valign="top">
                       <input readonly="readonly" type="text" name="catnames" '
-     . 'id="entry_categories" value="' . $catNames
-     . '" size="30" onclick="editCats( event )"/>
+			. 'id="entry_categories" value="' . $catNames
+			. '" size="30" onclick="editCats( event )"/>
                       <input type="hidden" name="cat_id" value="' . $catList
-     . '" />
+			. '" />
                     </td>
-                  </tr>' : '' )
-   . ( ! empty ( $categories ) || $DISABLE_ACCESS_FIELD != 'Y' ||
-    ( $DISABLE_PRIORITY_FIELD != 'Y' ) ? '
-                </table>' : '' );
+                  </tr>' : '')
+		. (!empty ($categories) || $DISABLE_ACCESS_FIELD != 'Y' ||
+		($DISABLE_PRIORITY_FIELD != 'Y') ? '
+                </table>' : '');
 
-  if ( $eType == 'task' ) { // Only for tasks.
-    $completed_visible = ( strlen ( $completed ) ? 'visible' : 'hidden' );
-    echo '<br />
+	if ($eType == 'task') { // Only for tasks.
+		$completed_visible = (strlen($completed) ? 'visible' : 'hidden');
+		echo '<br />
                 <table border="0" summary="">
                   <tr id="completed">
-                    <td class="tooltip" title="' . tooltip ( 'completed-help' )
-     . '"><label for="task_percent">' . translate ( 'Date Completed' )
-     . ':&nbsp;</label></td>
-                    <td>' . date_selection ( 'completed_', $completed ) . '</td>
+                    <td class="tooltip" title="' . tooltip('completed-help')
+			. '"><label for="task_percent">' . translate('Date Completed')
+			. ':&nbsp;</label></td>
+                    <td>' . date_selection('completed_', $completed) . '</td>
                   </tr>
                   <tr>
-                    <td class="tooltip" title="' . tooltip ( 'percent-help' )
-     . '"><label for="task_percent">' . translate ( 'Percent Complete' )
-     . ':&nbsp;</label></td>
+                    <td class="tooltip" title="' . tooltip('percent-help')
+			. '"><label for="task_percent">' . translate('Percent Complete')
+			. ':&nbsp;</label></td>
                     <td>
                       <select name="percent" id="task_percent" '
-     . 'onchange="completed_handler()">';
-    for ( $i = 0; $i < 101; $i += 10 ) {
-      echo '
+			. 'onchange="completed_handler()">';
+		for ($i = 0; $i < 101; $i += 10) {
+			echo '
                         <option value="' . "$i\" "
-       . ( $task_percent == $i ? $selected : '' )
-       . '>' . $i . '</option>';
-    }
-    echo '
+				. ($task_percent == $i ? $selected : '')
+				. '>' . $i . '</option>';
+		}
+		echo '
                       </select>
                     </td>
                   </tr>';
 
-    if ( ! empty ( $overall_percent ) ) {
-      echo '
+		if (!empty ($overall_percent)) {
+			echo '
                   <tr>
                     <td colspan="2">
                       <table width="100%" border="0" cellpadding="2" '
-       . 'cellspacing="5" summary="">
+				. 'cellspacing="5" summary="">
                         <tr>
-                          <td colspan="2">' . translate ( 'All Percentages' )
-       . '</td>
+                          <td colspan="2">' . translate('All Percentages')
+				. '</td>
                         </tr>';
-      $others_complete = 'yes';
-      for ( $i = 0, $cnt = count ( $overall_percent ); $i < $cnt; $i++ ) {
-        user_load_variables ( $overall_percent[$i][0], 'percent' );
-        echo '
+			$others_complete = 'yes';
+			for ($i = 0, $cnt = count($overall_percent); $i < $cnt; $i++) {
+				user_load_variables($overall_percent[$i][0], 'percent');
+				echo '
                         <tr>
                           <td>' . $percentfullname . '</td>
                           <td>' . $overall_percent[$i][1] . '</td>
                         </tr>';
-        if ( $overall_percent[$i][0] != $real_user &&
-          $overall_percent[$i][1] < 100 )
-          $others_complete = 'no';
-      }
-      echo '
+				if ($overall_percent[$i][0] != $real_user &&
+					$overall_percent[$i][1] < 100)
+					$others_complete = 'no';
+			}
+			echo '
                       </table>';
-    }
-    echo '
+		}
+		echo '
                     </td>
                   </tr>
                 </table>
                 <input type="hidden" name="others_complete" value="'
-     . $others_complete . '" />';
-  } //end tasks only
+			. $others_complete . '" />';
+	} //end tasks only
 
-  echo '
+	echo '
               </td>
-            </tr>' . ( $DISABLE_LOCATION_FIELD != 'Y' ? '
+            </tr>' . ($DISABLE_LOCATION_FIELD != 'Y' ? '
             <tr style="display:none">
-              <td class="tooltip" title="' . tooltip ( 'location-help' )
-     . '"><label for="entry_location">Liczba os.</label></td>
+              <td class="tooltip" title="' . tooltip('location-help')
+			. '"><label for="entry_location">Liczba os.</label></td>
               <td colspan="2"><input type="number" name="location" '
-     . 'id="entry_location" size="55" value="' . htmlspecialchars ( $location )
-     . '" /></td>
-            </tr>' : '' ) . ( $DISABLE_URL_FIELD != 'Y' ? '
+			. 'id="entry_location" size="55" value="' . htmlspecialchars($location)
+			. '" /></td>
+            </tr>' : '') . ($DISABLE_URL_FIELD != 'Y' ? '
             <tr>
-              <td class="tooltip" title="' . tooltip ( 'url-help' )
-     . '"><label for="entry_url">' . translate ( 'URL' ) . ':</label></td>
+              <td class="tooltip" title="' . tooltip('url-help')
+			. '"><label for="entry_url">' . translate('URL') . ':</label></td>
               <td colspan="2"><input type="text" name="entry_url" id="entry_url" '
-     . 'size="100" value="' . htmlspecialchars ( $cal_url ) . '" /></td>
-            </tr>' : '' ) . '
-            <tr>
-              <td class="tooltip" title="' . tooltip ( 'date-help' )
-   . '"><label>'
-   . ( $eType == 'task' ? translate ( 'Start Date' ) : translate ( 'Date' ) )
-   . ':</label></td>
-              <td colspan="2">' . date_selection ( '', $cal_date ) . '</td>
-            </tr>
-            <tr>
+			. 'size="100" value="' . htmlspecialchars($cal_url) . '" /></td>
+            </tr>' : '') . ($isEventManage ? '' : '
+            <tr >
+              <td class="tooltip" title="' . tooltip('date-help')
+			. '"><label>'
+			. ($eType == 'task' ? translate('Start Date') : translate('Date'))
+			. ':</label></td>
+              <td colspan="2">' . date_selection('', $cal_date) . '</td>
+            </tr>') . '
+            <tr class="' . ($isEventManage ? "event-row" : "") . '" id="timeTypeRow">
               <td';
 
-  if ( $eType != 'task' ) {
-    $dur_h = intval ( $duration / 60 );
+	if ($eType != 'task') {
+		$dur_h = intval($duration / 60);
 
-    echo '>&nbsp;</td>
+		echo '>&nbsp;</td>
               <td colspan="2">
                 <select name="timetype" onchange="timetype_handler()">
                   <option value="U" '
-     . ( $allday != 'Y' && $hour == -1 ? $selected : '' ) . '>'
-     . translate ( 'Untimed event' ) . '</option>
+			. ($allday != 'Y' && $hour == -1 ? $selected : '') . '>'
+			. translate('Untimed event') . '</option>
                   <option value="T" '
-     . ( $allday != 'Y' && $hour >= 0 ? $selected : '' ) . '>'
-     . translate ( 'Timed event' ) . '</option>
+			. ($allday != 'Y' && $hour >= 0 ? $selected : '') . '>'
+			. translate('Timed event') . '</option>
                   <option value="A" '
-     . ( $allday == 'Y' ? $selected : '' ) . '>'
-     . translate ( 'All day event' ) . '</option>
+			. ($allday == 'Y' ? $selected : '') . '>'
+			. translate('All day event') . '</option>
                 </select>
               </td>
-            </tr>' . ( empty ( $TZ_notice ) ? '' : '
+            </tr>' . (empty ($TZ_notice) ? '' : '
             <tr id="timezonenotice">
               <td class="tooltip" title="'
-       . tooltip ( 'Time entered here is based on your Timezone.' ) . '">'
-       . translate ( 'Timezone Offset' ) . ':</td>
+				. tooltip('Time entered here is based on your Timezone.') . '">'
+				. translate('Timezone Offset') . ':</td>
               <td colspan="2">' . $TZ_notice . '</td>
-            </tr>' ) . '
+            </tr>') . '
             <tr id="timeentrystart" style="visibility:hidden;">
-              <td class="tooltip" title="' . tooltip ( 'time-help' ) . '">'
-     . translate ( 'Time' ) . ':' . '</td>
-              <td colspan="2">' . time_selection ( 'entry_', $cal_time );
+              <td class="tooltip" title="' . tooltip('time-help') . '">'
+			. translate('Time') . ':' . '</td>
+              <td colspan="2">' . time_selection('entry_', $cal_time);
 
-    if ( $TIMED_EVT_LEN != 'E' ) {
-      echo '
+		if ($TIMED_EVT_LEN != 'E') {
+			echo '
               </td>
             </tr>
             <tr id="timeentryduration" style="visibility:hidden;">
-              <td><span class="tooltip" title="' . tooltip ( 'duration-help' )
-       . '">' . translate ( 'Duration' ) . ':&nbsp;</span></td>
+              <td><span class="tooltip" title="' . tooltip('duration-help')
+				. '">' . translate('Duration') . ':&nbsp;</span></td>
               <td colspan="2">
                 <input type="text" name="duration_h" id="duration_h" size="2" '
-       . 'maxlength="2" value="';
-      if ( $allday != 'Y' )
-        printf ( "%d", $dur_h );
+				. 'maxlength="2" value="';
+			if ($allday != 'Y')
+				printf("%d", $dur_h);
 
-      echo '" />:
+			echo '" />:
                 <input type="text" name="duration_m" id="duration_m" size="2" '
-       . 'maxlength="2" value="';
-      if ( $allday != 'Y' )
-        printf ( "%02d", $duration - ( $dur_h * 60 ) );
+				. 'maxlength="2" value="';
+			if ($allday != 'Y')
+				printf("%02d", $duration - ($dur_h * 60));
 
-      echo '" />&nbsp;(<label for="duration_h">' . $hoursStr
-       . '</label>: <label for="duration_m">' . $minutStr
-       . '</label>)
+			echo '" />&nbsp;(<label for="duration_h">' . $hoursStr
+				. '</label>: <label for="duration_m">' . $minutStr
+				. '</label>)
               </td>
             </tr>';
-    } else
-      echo '
+		} else
+			echo '
             <span id="timeentryend" class="tooltip" title="'
-       . tooltip ( 'end-time-help' ) . '">&nbsp;-&nbsp;'
-       . time_selection ( 'end_',
-        ( $id ? add_duration ( $cal_time, $duration ) : $cal_time ) ) . '</span>
+				. tooltip('end-time-help') . '">&nbsp;-&nbsp;'
+				. time_selection('end_',
+					($id ? add_duration($cal_time, $duration) : $cal_time)) . '</span>
           </td>
         </tr>';
-  } else { // eType == task
-    echo ' class="tooltip" title="' . tooltip ( 'time-help' ) . '">'
-     . translate ( 'Start Time' ) . ':</td>
-          <td colspan="2">' . time_selection ( 'entry_', $cal_time ) . '</td>
+	} else { // eType == task
+		echo ' class="tooltip" title="' . tooltip('time-help') . '">'
+			. translate('Start Time') . ':</td>
+          <td colspan="2">' . time_selection('entry_', $cal_time) . '</td>
         </tr>
         <tr>
           <td colspan="3">&nbsp;</td>
         </tr>
         <tr>
-          <td class="tooltip" title="' . tooltip ( 'date-help' ) . '">'
-     . translate ( 'Due Date' ) . ':</td>
-          <td colspan="2">' . date_selection ( 'due_', $due_date ) . '</td>
+          <td class="tooltip" title="' . tooltip('date-help') . '">'
+			. translate('Due Date') . ':</td>
+          <td colspan="2">' . date_selection('due_', $due_date) . '</td>
         </tr>
         <tr>
-          <td class="tooltip" title="' . tooltip ( 'time-help' ) . '">'
-     . translate ( 'Due Time' ) . ':</td>
-          <td colspan="2">' . time_selection ( 'due_', $due_time ) . '</td>
+          <td class="tooltip" title="' . tooltip('time-help') . '">'
+			. translate('Due Time') . ':</td>
+          <td colspan="2">' . time_selection('due_', $due_time) . '</td>
         </tr>';
-  }
+	}
 
-  // Site-specific extra fields (see site_extras.php).
-  // load and display any site-specific fields.
-  if ( $id > 0 )
-    $extras = get_site_extra_fields ( $id );
+	// Site-specific extra fields (see site_extras.php).
+	// load and display any site-specific fields.
+	if ($id > 0)
+		$extras = get_site_extra_fields($id);
 
-  $site_extracnt = count ( $site_extras );
-  echo '
-      </table>' . ( $site_extracnt ? ( ! empty ( $site_extras[0]['FIELDSET'] ) ? '
+	$site_extracnt = count($site_extras);
+	echo '
+      </table>' . ($site_extracnt ? (!empty ($site_extras[0]['FIELDSET']) ? '
       <div>
         <fieldset>
-          <legend>' . translate ( 'Site Extras' ) . '</legend>' : '' ) . '
-          <table summary="">' : '' );
+          <legend>' . translate('Site Extras') . '</legend>' : '') . '
+          <table summary="">' : '');
 
-  for ( $i = 0; $i < $site_extracnt; $i++ ) {
-    if ( $site_extras[$i] == 'FIELDSET' )
-      continue;
+	for ($i = 0; $i < $site_extracnt; $i++) {
+		if ($site_extras[$i] == 'FIELDSET')
+			continue;
 
-    $extra_name = $site_extras[$i][0];
-    $extra_descr = $site_extras[$i][1];
-    $extra_type = $site_extras[$i][2];
-    $extra_arg1 = $site_extras[$i][3];
-    $extra_arg2 = $site_extras[$i][4];
-    // Default value if needed.
-    $defIdx = ( empty ( $extras[$extra_name]['cal_data'] )
-      ? $extra_arg2 : $extras[$extra_name]['cal_data'] );
+		$extra_name = $site_extras[$i][0];
+		$extra_descr = $site_extras[$i][1];
+		$extra_type = $site_extras[$i][2];
+		$extra_arg1 = $site_extras[$i][3];
+		$extra_arg2 = $site_extras[$i][4];
+		// Default value if needed.
+		$defIdx = (empty ($extras[$extra_name]['cal_data'])
+			? $extra_arg2 : $extras[$extra_name]['cal_data']);
 
-    echo '
+		echo '
             <tr>
               <td class="aligntop bold">'
-     . ( $extra_type == EXTRA_MULTILINETEXT ? '<br />' : '' )
-     . translate ( $extra_descr ) . ':</td>
+			. ($extra_type == EXTRA_MULTILINETEXT ? '<br />' : '')
+			. translate($extra_descr) . ':</td>
               <td>';
 
-    if ( $extra_type == EXTRA_URL )
-      echo '
+		if ($extra_type == EXTRA_URL)
+			echo '
                 <input type="text" size="50" name="' . $extra_name . '" value="'
-       . ( empty ( $extras[$extra_name]['cal_data'] )
-        ? '' : htmlspecialchars ( $extras[$extra_name]['cal_data'] ) ) . '" />';
-    elseif ( $extra_type == EXTRA_EMAIL )
-      echo '
+				. (empty ($extras[$extra_name]['cal_data'])
+					? '' : htmlspecialchars($extras[$extra_name]['cal_data'])) . '" />';
+		elseif ($extra_type == EXTRA_EMAIL)
+			echo '
                 <input type="text" size="30" name="' . $extra_name . '" value="'
-       . ( empty ( $extras[$extra_name]['cal_data'] )
-        ? '' : htmlspecialchars ( $extras[$extra_name]['cal_data'] ) ) . '" />';
-    elseif ( $extra_type == EXTRA_DATE )
-      echo date_selection ( $extra_name,
-        ( empty ( $extras[$extra_name]['cal_date'] )
-          ? $cal_date : $extras[$extra_name]['cal_date'] ) );
-    elseif ( $extra_type == EXTRA_TEXT ) {
-      $size = ( $extra_arg1 > 0 ? $extra_arg1 : 50 );
-      echo '
+				. (empty ($extras[$extra_name]['cal_data'])
+					? '' : htmlspecialchars($extras[$extra_name]['cal_data'])) . '" />';
+		elseif ($extra_type == EXTRA_DATE)
+			echo date_selection($extra_name,
+				(empty ($extras[$extra_name]['cal_date'])
+					? $cal_date : $extras[$extra_name]['cal_date']));
+		elseif ($extra_type == EXTRA_TEXT) {
+			$size = ($extra_arg1 > 0 ? $extra_arg1 : 50);
+			echo '
                 <input type="text" size="' . $size . '" name="' . $extra_name
-       . '" value="' . ( empty ( $extras[$extra_name]['cal_data'] )
-        ? '' : htmlspecialchars ( $extras[$extra_name]['cal_data'] ) ) . '" />';
-    } elseif ( $extra_type == EXTRA_MULTILINETEXT )
-      echo '
-                <textarea rows="' . ( $extra_arg2 > 0 ? $extra_arg2 : 5 )
-       . '" cols="' . ( $extra_arg1 > 0 ? $extra_arg1 : 50 ) . '" name="'
-       . $extra_name . '">' . ( empty ( $extras[$extra_name]['cal_data'] )
-        ? '' : htmlspecialchars ( $extras[$extra_name]['cal_data'] ) )
-       . '</textarea>';
-    elseif ( $extra_type == EXTRA_USER ) {
-      // Show list of calendar users...
-      echo '
+				. '" value="' . (empty ($extras[$extra_name]['cal_data'])
+					? '' : htmlspecialchars($extras[$extra_name]['cal_data'])) . '" />';
+		} elseif ($extra_type == EXTRA_MULTILINETEXT)
+			echo '
+                <textarea rows="' . ($extra_arg2 > 0 ? $extra_arg2 : 5)
+				. '" cols="' . ($extra_arg1 > 0 ? $extra_arg1 : 50) . '" name="'
+				. $extra_name . '">' . (empty ($extras[$extra_name]['cal_data'])
+					? '' : htmlspecialchars($extras[$extra_name]['cal_data']))
+				. '</textarea>';
+		elseif ($extra_type == EXTRA_USER) {
+			// Show list of calendar users...
+			echo '
                 <select name="' . $extra_name . '">
                   <option value="">None</option>';
-      $userlist = get_my_users ( get_my_users );
-      $usercnt = count ( $userlist );
-      for ( $j = 0; $j < $usercnt; $j++ ) {
-        if ( access_is_enabled () && !
-            access_user_calendar ( 'view', $userlist[$j]['cal_login'] ) )
-          continue; // Cannot view calendar so cannot add to their cal.
+			$userlist = get_my_users(get_my_users);
+			$usercnt = count($userlist);
+			for ($j = 0; $j < $usercnt; $j++) {
+				if (access_is_enabled() && !
+					access_user_calendar('view', $userlist[$j]['cal_login']))
+					continue; // Cannot view calendar so cannot add to their cal.
 
-        echo '
+				echo '
                   <option value="' . $userlist[$j]['cal_login'] . '"'
-         . ( ! empty ( $extras[$extra_name]['cal_data'] ) &&
-          ( $userlist[$j]['cal_login'] == $extras[$extra_name]['cal_data'] )
-          ? $selected : '' )
-         . '>' . $userlist[$j]['cal_fullname'] . '</option>';
-      }
-      echo '
+					. (!empty ($extras[$extra_name]['cal_data']) &&
+					($userlist[$j]['cal_login'] == $extras[$extra_name]['cal_data'])
+						? $selected : '')
+					. '>' . $userlist[$j]['cal_fullname'] . '</option>';
+			}
+			echo '
                 </select>';
-    } elseif ( $extra_type == EXTRA_SELECTLIST ) {
-      // Show custom select list.
-      $extraSelectArr = $isMultiple = $multiselect = '';
-      if ( is_array ( $extra_arg1 ) ) {
-        $extra_arg1cnt = count ( $extra_arg1 );
-        if ( $extra_arg2 > 0 ) {
-          $multiselect = ' multiple="multiple" size="'
-           . min ( $extra_arg2, $extra_arg1cnt ) . '" ';
-          $isMultiple = '[]';
-          if ( ! empty ( $extras ) )
-            $extraSelectArr = explode ( ',', $extras[$extra_name]['cal_data'] );
-        }
+		} elseif ($extra_type == EXTRA_SELECTLIST) {
+			// Show custom select list.
+			$extraSelectArr = $isMultiple = $multiselect = '';
+			if (is_array($extra_arg1)) {
+				$extra_arg1cnt = count($extra_arg1);
+				if ($extra_arg2 > 0) {
+					$multiselect = ' multiple="multiple" size="'
+						. min($extra_arg2, $extra_arg1cnt) . '" ';
+					$isMultiple = '[]';
+					if (!empty ($extras))
+						$extraSelectArr = explode(',', $extras[$extra_name]['cal_data']);
+				}
 
-        echo '
+				echo '
                 <select name="' . $extra_name . $isMultiple . '"'
-         . $multiselect . '>';
-        for ( $j = 0; $j < $extra_arg1cnt; $j++ ) {
-          echo '
+					. $multiselect . '>';
+				for ($j = 0; $j < $extra_arg1cnt; $j++) {
+					echo '
                   <option value="' . $extra_arg1[$j] . '" ';
 
-          if ( ! empty ( $extras[$extra_name]['cal_data'] ) ) {
-            if ( $extra_arg2 == 0 &&
-              $extra_arg1[$j] == $extras[$extra_name]['cal_data'] )
-              echo $selected;
-            else
-            if ( $extra_arg2 > 0 &&
-              in_array ( $extra_arg1[$j], $extraSelectArr ) )
-              echo $selected;
-          } else
-            echo ( $j == 0 ? $selected : '' );
+					if (!empty ($extras[$extra_name]['cal_data'])) {
+						if ($extra_arg2 == 0 &&
+							$extra_arg1[$j] == $extras[$extra_name]['cal_data'])
+							echo $selected;
+						else
+							if ($extra_arg2 > 0 &&
+								in_array($extra_arg1[$j], $extraSelectArr))
+								echo $selected;
+					} else
+						echo($j == 0 ? $selected : '');
 
-          echo '>' . $extra_arg1[$j] . '</option>';
-        }
-      }
-      echo '
+					echo '>' . $extra_arg1[$j] . '</option>';
+				}
+			}
+			echo '
                   </select>';
-    } elseif ( $extra_type == EXTRA_RADIO )
-      // Show custom radio selections.
-      echo print_radio ( $extra_name, $extra_arg1, '', $defIdx );
-    elseif ( $extra_type == EXTRA_CHECKBOX )
-      // Show custom checkbox option.
-      echo print_checkbox ( array ( $extra_name, $extra_arg1, '', $defIdx ) );
+		} elseif ($extra_type == EXTRA_RADIO)
+			// Show custom radio selections.
+			echo print_radio($extra_name, $extra_arg1, '', $defIdx);
+		elseif ($extra_type == EXTRA_CHECKBOX)
+			// Show custom checkbox option.
+			echo print_checkbox(array($extra_name, $extra_arg1, '', $defIdx));
 
-    echo '
+		echo '
                 </td>
               </tr>';
-  }
-  if ( $site_extracnt ) {
-    echo '
-          </table>' . ( empty ( $site_extras[0]['FIELDSET'] ) ? '' : '
+	}
+	if ($site_extracnt) {
+		echo '
+          </table>' . (empty ($site_extras[0]['FIELDSET']) ? '' : '
         </fieldset>
-      </div>' );
-  }
-  // end site-specific extra fields
+      </div>');
+	}
+	// end site-specific extra fields
 
-  echo ( $useTabs ? '
+	echo ($useTabs ? '
     </div>' : '
-    </fieldset>' ) . '
+    </fieldset>') . '
 
-<!-- PARTICIPANTS -->' . ( $useTabs ? '
+<!-- PARTICIPANTS -->' . ($useTabs ? '
     <a name="tabparticipants"></a>
     <div id="tabscontent_participants">' : '
     <fieldset>
-      <legend>' . translate ( 'Participants' ) . '</legend>' ) . '
+      <legend>' . translate('Participants') . '</legend>') . '
       <table>';
-  // .
-  // Only ask for participants if we are multi-user.
-  $show_participants = ( $DISABLE_PARTICIPANTS_FIELD != 'Y' );
-  if ( $is_admin )
-    $show_participants = true;
+	// .
+	// Only ask for participants if we are multi-user.
+	$show_participants = ($DISABLE_PARTICIPANTS_FIELD != 'Y');
+	if ($is_admin)
+		$show_participants = true;
 
-  if ( $login == '__public__' && $PUBLIC_ACCESS_OTHERS != 'Y' )
-    $show_participants = false;
+	if ($login == '__public__' && $PUBLIC_ACCESS_OTHERS != 'Y')
+		$show_participants = false;
 
-  if ( $single_user == 'N' && $show_participants ) {
-    $userlist = get_my_users ( $create_by, 'invite' );
-    if ( $NONUSER_ENABLED == 'Y' ) {
-      // Include public NUCs.
-      $nonusers = get_my_nonusers ( $real_user, false );
-      $userlist = ( $NONUSER_AT_TOP == 'Y'
-        ? array_merge ( $nonusers, $userlist )
-        : array_merge ( $userlist, $nonusers ) );
-    }
-    $num_users = $size = 0;
-    $usercnt = count ( $userlist );
-    $users = '';
-    for ( $i = 0; $i < $usercnt; $i++ ) {
-      $l = $userlist[$i]['cal_login'];
-      $size++;
-      $users .= '
+	if ($single_user == 'N' && $show_participants) {
+		$userlist = get_my_users($create_by, 'invite');
+		if ($NONUSER_ENABLED == 'Y') {
+			// Include public NUCs.
+			$nonusers = get_my_nonusers($real_user, false);
+			$userlist = ($NONUSER_AT_TOP == 'Y'
+				? array_merge($nonusers, $userlist)
+				: array_merge($userlist, $nonusers));
+		}
+		$num_users = $size = 0;
+		$usercnt = count($userlist);
+		$users = '';
+		for ($i = 0; $i < $usercnt; $i++) {
+			$l = $userlist[$i]['cal_login'];
+			$size++;
+			$users .= '
               <option value="' . $l . '"';
-      if ( $id > 0 ) {
-        if ( ! empty ( $participants[$l] ) )
-          $users .= $selected;
-      } else {
-        if ( ! empty ( $defusers ) && ! empty ( $participants[$l] ) )
-          // Default selection of participants was in the URL.
-          $users .= $selected;
+			if ($id > 0) {
+				if (!empty ($participants[$l]))
+					$users .= $selected;
+			} else {
+				if (!empty ($defusers) && !empty ($participants[$l]))
+					// Default selection of participants was in the URL.
+					$users .= $selected;
 
-        if ( ( $l == $login && ! $is_assistant && ! $is_nonuser_admin ) ||
-            ( ! empty ( $user ) && $l == $user ) )
-          $users .= $selected;
+				if (($l == $login && !$is_assistant && !$is_nonuser_admin) ||
+					(!empty ($user) && $l == $user))
+					$users .= $selected;
 
-        if ( $l == '__public__' && !
-          empty ( $PUBLIC_ACCESS_DEFAULT_SELECTED ) &&
-            $PUBLIC_ACCESS_DEFAULT_SELECTED == 'Y' )
-          $users .= $selected;
-      }
-      $users .= '>' . $userlist[$i]['cal_fullname'] . '</option>';
-    }
+				if ($l == '__public__' && !
+					empty ($PUBLIC_ACCESS_DEFAULT_SELECTED) &&
+					$PUBLIC_ACCESS_DEFAULT_SELECTED == 'Y')
+					$users .= $selected;
+			}
+			$users .= '>' . $userlist[$i]['cal_fullname'] . '</option>';
+		}
 
-    if ( $size > 50 )
-      $size = 50;
-    elseif ( $size > 20 )
-      $size = 20;
-    elseif ( $size > 5 )
-      $size = 5;
+		if ($size > 50)
+			$size = 50;
+		elseif ($size > 20)
+			$size = 20;
+		elseif ($size > 5)
+			$size = 5;
 
-    echo '
-        <tr title="' . tooltip ( 'participants-help' ) . '">
+		echo '
+        <tr title="' . tooltip('participants-help') . '">
           <td class="tooltipselect"><label for="entry_part">'
-     . translate ( 'Participants' ) . ':</label></td>
+			. translate('Participants') . ':</label></td>
           <td>
             <select name="participants[]" id="entry_part" size="' . $size
-     . '" multiple="multiple">' . $users . '
-            </select>' . ( $GROUPS_ENABLED == 'Y' ? '
+			. '" multiple="multiple">' . $users . '
+            </select>' . ($GROUPS_ENABLED == 'Y' ? '
             <input type="button" onclick="selectUsers()" value="'
-       . translate ( 'Select' ) . '..." />' : '' ) . '
+				. translate('Select') . '..." />' : '') . '
             <input type="button" onclick="showSchedule()" value="'
-     . translate ( 'Availability' ) . '..." />
+			. translate('Availability') . '..." />
           </td>
         </tr>'
-    // External users.
-    . ( ! empty ( $ALLOW_EXTERNAL_USERS ) && $ALLOW_EXTERNAL_USERS == 'Y' ? '
-        <tr title="' . tooltip ( 'external-participants-help' ) . '">
+			// External users.
+			. (!empty ($ALLOW_EXTERNAL_USERS) && $ALLOW_EXTERNAL_USERS == 'Y' ? '
+        <tr title="' . tooltip('external-participants-help') . '">
           <td class="tooltip aligntop"><label for="entry_extpart">'
-       . translate ( 'External Participants' ) . ':</label></td>
+				. translate('External Participants') . ':</label></td>
           <td><textarea name="externalparticipants" id="entry_extpart" rows="5" '
-       . 'cols="40">' . $external_users . '</textarea></td>
-        </tr>' : '' );
-  }
-  echo '
-      </table>' . ( $useTabs ? '
+				. 'cols="40">' . $external_users . '</textarea></td>
+        </tr>' : '');
+	}
+	echo '
+      </table>' . ($useTabs ? '
     </div>' : '
-    </fieldset>' ) . '
+    </fieldset>') . '
 
 <!-- REPEATING INFO -->';
-  if ( $DISABLE_REPEATING_FIELD != 'Y' ) {
-    echo ( $useTabs ? '
+	if ($DISABLE_REPEATING_FIELD != 'Y') {
+		echo ($useTabs ? '
     <a name="tabpete"></a>
     <div id="tabscontent_pete">' : '
     <fieldset>
-      <legend>' . translate ( 'Repeat' ) . '</legend>' ) . '
+      <legend>' . translate('Repeat') . '</legend>') . '
       <table border="0" cellspacing="0" cellpadding="3" summary="">
         <tr>
-          <td class="tooltip" title="' . tooltip ( 'repeat-type-help' )
-     . '"><label for="rpttype">' . translate ( 'Type' ) . ':</label></td>
+          <td class="tooltip" title="' . tooltip('repeat-type-help')
+			. '"><label for="rpttype">' . translate('Type') . ':</label></td>
           <td colspan="2">
             <select name="rpt_type" id="rpttype" '
-     . 'onchange="rpttype_handler(); rpttype_weekly()">
-              <option value="none"' . ( strcmp ( $rpt_type, 'none' ) == 0
-      ? $selected : '' ) . '>' . translate ( 'None' ) . '</option>
-              <option value="daily"' . ( strcmp ( $rpt_type, 'daily' ) == 0
-      ? $selected : 'selected' ) . '>' . translate ( 'Daily' ) . '</option>
-              <option value="weekly"' . ( strcmp ( $rpt_type, 'weekly' ) == 0
-      ? $selected : '' ) . '>' . translate ( 'Weekly' ) . '</option>
+			. 'onchange="rpttype_handler(); rpttype_weekly()">
+              <option value="none"' . (strcmp($rpt_type, 'none') == 0
+				? $selected : '') . '>' . translate('None') . '</option>
+              <option value="daily"' . (strcmp($rpt_type, 'daily') == 0
+				? $selected : 'selected') . '>' . translate('Daily') . '</option>
+              <option value="weekly"' . (strcmp($rpt_type, 'weekly') == 0
+				? $selected : '') . '>' . translate('Weekly') . '</option>
               <option value="monthlyByDay"'
-     . ( strcmp ( $rpt_type, 'monthlyByDay' ) == 0 ? $selected : '' )
-     // translate ( 'Monthly' ) translate ( 'by day' ) translate ( 'by date' )
-     // translate ( 'by position' )
-     . '>' . translate ( 'Monthly (by day)' ) . '</option>
+			. (strcmp($rpt_type, 'monthlyByDay') == 0 ? $selected : '')
+			// translate ( 'Monthly' ) translate ( 'by day' ) translate ( 'by date' )
+			// translate ( 'by position' )
+			. '>' . translate('Monthly (by day)') . '</option>
               <option value="monthlyByDate"'
-     . ( strcmp ( $rpt_type, 'monthlyByDate' ) == 0 ? $selected : '' )
-     . '>' . translate ( 'Monthly (by date)' ) . '</option>
+			. (strcmp($rpt_type, 'monthlyByDate') == 0 ? $selected : '')
+			. '>' . translate('Monthly (by date)') . '</option>
               <option value="monthlyBySetPos"'
-     . ( strcmp ( $rpt_type, 'monthlyBySetPos' ) == 0 ? $selected : '' )
-     . '>' . translate ( 'Monthly (by position)' ) . '</option>
-              <option value="yearly"' . ( strcmp ( $rpt_type, 'yearly' ) == 0
-      ? $selected : '' ) . '>' . translate ( 'Yearly' ) . '</option>
+			. (strcmp($rpt_type, 'monthlyBySetPos') == 0 ? $selected : '')
+			. '>' . translate('Monthly (by position)') . '</option>
+              <option value="yearly"' . (strcmp($rpt_type, 'yearly') == 0
+				? $selected : '') . '>' . translate('Yearly') . '</option>
               <option value="manual"'
-     . ( strcmp ( $rpt_type, 'manual' ) == 0 ? $selected : '' )
-     . '>' . translate ( 'Manual' ) . '</option>
+			. (strcmp($rpt_type, 'manual') == 0 ? $selected : '')
+			. '>' . translate('Manual') . '</option>
             </select>&nbsp;&nbsp;&nbsp;<label id="rpt_mode"><input '
-     . 'type="checkbox" name="rptmode" id="rptmode" value="y" '
-     . 'onclick="rpttype_handler()" '
-     . ( empty ( $expert_mode ) ? '' : $checked )
-     . '/>' . translate ( 'Expert Mode' ) . '</label>
+			. 'type="checkbox" name="rptmode" id="rptmode" value="y" '
+			. 'onclick="rpttype_handler()" '
+			. (empty ($expert_mode) ? '' : $checked)
+			. '/>' . translate('Expert Mode') . '</label>
           </td>
         </tr>
         <tr id="rptenddate1" style="visibility:hidden;">
-          <td class="tooltip" title="' . tooltip ( 'repeat-end-date-help' )
-     . '" rowspan="3"><label for="rpt_day">' . translate ( 'Ending' )
-     . ':</label></td>
+          <td class="tooltip" title="' . tooltip('repeat-end-date-help')
+			. '" rowspan="3"><label for="rpt_day">' . translate('Ending')
+			. ':</label></td>
           <td colspan="2" class="boxtop boxright boxleft"><input type="radio" '
-     . 'name="rpt_end_use" id="rpt_untilf" value="t" checked="checked" '
-     . ( empty ( $rpt_end ) && empty ( $rpt_count ) ? $checked : 'checked' )
-     . ' onclick="toggle_until()" /><label for="rpt_untilf">'
-     . translate ( 'Forever' ) . '</label></td>
+			. 'name="rpt_end_use" id="rpt_untilf" value="t" checked="checked" '
+			. (empty ($rpt_end) && empty ($rpt_count) ? $checked : 'checked')
+			. ' onclick="toggle_until()" /><label for="rpt_untilf">'
+			. translate('Forever') . '</label></td>
         </tr>
         <tr id="rptenddate2" style="visibility:hidden;">
           <td class="boxleft"><input type="radio" name="rpt_end_use" '
-     . 'id="rpt_untilu" value="u" ' . ( empty ( $rpt_end ) ? 'checked' : $checked )
-     . ' onclick="toggle_until()" />&nbsp;<label for="rpt_untilu">'
-     . translate ( 'Use end date' ) . '</label></td>
+			. 'id="rpt_untilu" value="u" ' . (empty ($rpt_end) ? 'checked' : $checked)
+			. ' onclick="toggle_until()" />&nbsp;<label for="rpt_untilu">'
+			. translate('Use end date') . '</label></td>
           <td class="boxright"><span class="end_day_selection" '
-     . 'id="rpt_end_day_select">'
-     . date_selection ( 'rpt_', ( $rpt_end_date ? $rpt_end_date : $cal_date ) )
-     . '</span><span id="rpt_until_time_date"><br />' . time_selection ( 'rpt_', $rpt_end_time ) . '</span></td>
+			. 'id="rpt_end_day_select">'
+			. date_selection('rpt_', ($rpt_end_date ? $rpt_end_date : $cal_date))
+			. '</span><span id="rpt_until_time_date"><br />' . time_selection('rpt_', $rpt_end_time) . '</span></td>
         </tr>
         <tr id="rptenddate3" style="visibility:hidden;">
           <td class="boxbottom boxleft"><input type="radio" name="rpt_end_use" '
-     . 'id="rpt_untilc" value="c" ' . ( empty ( $rpt_count ) ? '' : $checked )
-     . ' onclick="toggle_until()" />&nbsp;<label for="rpt_untilc">'
-     . translate ( 'Number of times' ) . '</label></td>
+			. 'id="rpt_untilc" value="c" ' . (empty ($rpt_count) ? '' : $checked)
+			. ' onclick="toggle_until()" />&nbsp;<label for="rpt_untilc">'
+			. translate('Number of times') . '</label></td>
           <td class="boxright boxbottom"><input type="text" name="rpt_count" '
-     . 'id="rpt_count" size="4" maxlength="4" value="' . $rpt_count . '" /></td>
+			. 'id="rpt_count" size="4" maxlength="4" value="' . $rpt_count . '" /></td>
         </tr>
         <tr id="rptfreq" style="visibility:hidden;" title="'
-     . tooltip ( 'repeat-frequency-help' ) . '">
+			. tooltip('repeat-frequency-help') . '">
           <td class="tooltip"><label for="entry_freq">'
-     . translate ( 'Frequency' ) . ':</label></td>
+			. translate('Frequency') . ':</label></td>
           <td colspan="2">
             <input type="text" name="rpt_freq" id="entry_freq" size="4" '
-     . 'maxlength="4" value="' . $rpt_freq . '" />&nbsp;&nbsp;&nbsp;&nbsp;
+			. 'maxlength="4" value="' . $rpt_freq . '" />&nbsp;&nbsp;&nbsp;&nbsp;
             <label id="weekdays_only"><input type="checkbox" '
-     . 'name="weekdays_only" value="y" '
-     . ( empty ( $weekdays_only ) ? '' : $checked ) . ' />'
-     . translate ( 'Weekdays Only' )
-     . '</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			. 'name="weekdays_only" value="y" '
+			. (empty ($weekdays_only) ? '' : $checked) . ' />'
+			. translate('Weekdays Only')
+			. '</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <span id="rptwkst">
               <select name="wkst">';
-    for ( $i = 0; $i < 7; $i++ ) {
-      echo '
+		for ($i = 0; $i < 7; $i++) {
+			echo '
                 <option value="' . $byday_names[$i] . '" '
-                 . ( $wkst ==$byday_names[$i] ? $selected : '' )
-       . '>' . translate ( $byday_names[$i] ) . '</option>';
-              }
-    echo '
+				. ($wkst == $byday_names[$i] ? $selected : '')
+				. '>' . translate($byday_names[$i]) . '</option>';
+		}
+		echo '
               </select>&nbsp;&nbsp;<label for="rptwkst">'
-     . translate ( 'Week Start' ) . '</label>
+			. translate('Week Start') . '</label>
             </span>
           </td>
         </tr>
@@ -1184,75 +1336,75 @@ if ( $can_edit ) {
           <td colspan="4"></td>
         </tr>
         <tr id="rptbydayextended" style="visibility:hidden;" title="'
-     . tooltip ( 'repeat-bydayextended-help' ) . '">
-          <td class="tooltip"><label>' . translate ( 'ByDay' ) . ':</label></td>
+			. tooltip('repeat-bydayextended-help') . '">
+          <td class="tooltip"><label>' . translate('ByDay') . ':</label></td>
           <td colspan="2" class="boxall">
             <input type="hidden" name="bydayList" value="'
-     . ( empty ( $bydayStr ) ? '' : $bydayStr ) . '" />
+			. (empty ($bydayStr) ? '' : $bydayStr) . '" />
             <input type="hidden" name="bymonthdayList" value="'
-     . ( empty ( $bymonthdayStr ) ? '' : $bymonthdayStr ) . '" />
+			. (empty ($bymonthdayStr) ? '' : $bymonthdayStr) . '" />
             <input type="hidden" name="bysetposList" value="'
-     . ( empty ( $bysetposStr ) ? '' : $bysetposStr ) . '" />
+			. (empty ($bysetposStr) ? '' : $bysetposStr) . '" />
             <table class="byxxx" cellpadding="2" cellspacing="2" '
-     . 'border="1" summary="">
+			. 'border="1" summary="">
               <tr>
                 <td></td>';
-    // Display byday extended selection.
-    // We use BUTTONS in a triple state configuration, and store the values in
-    // a javascript array until form submission. We then set the hidden field
-    // bydayList to the string value of the array.
-    for ( $rpt_byday_label = $WEEK_START; 
-          $rpt_byday_label <= ( $WEEK_START + 6); $rpt_byday_label++ ) {
-            $rpt_byday_mod = $rpt_byday_label %7;
-            $class = ( is_weekend ( $rpt_byday_mod ) ? ' class="weekend" ' : '' );
-      echo '
-                <th width="50px"' .$class . '><label>'
-       . translate ( $weekday_names[$rpt_byday_mod] ) . '</label></th>';
-    }
-    echo '
+		// Display byday extended selection.
+		// We use BUTTONS in a triple state configuration, and store the values in
+		// a javascript array until form submission. We then set the hidden field
+		// bydayList to the string value of the array.
+		for ($rpt_byday_label = $WEEK_START;
+		     $rpt_byday_label <= ($WEEK_START + 6); $rpt_byday_label++) {
+			$rpt_byday_mod = $rpt_byday_label % 7;
+			$class = (is_weekend($rpt_byday_mod) ? ' class="weekend" ' : '');
+			echo '
+                <th width="50px"' . $class . '><label>'
+				. translate($weekday_names[$rpt_byday_mod]) . '</label></th>';
+		}
+		echo '
               </tr>
               <tr>
-                <th>' . translate ( 'All' ) . '</th>';
-    for ( $rpt_byday_single = $WEEK_START; 
-          $rpt_byday_single <= ( $WEEK_START + 6); $rpt_byday_single++ ) {
-            $rpt_byday_mod = $rpt_byday_single %7;
-      echo '
+                <th>' . translate('All') . '</th>';
+		for ($rpt_byday_single = $WEEK_START;
+		     $rpt_byday_single <= ($WEEK_START + 6); $rpt_byday_single++) {
+			$rpt_byday_mod = $rpt_byday_single % 7;
+			echo '
                 <td><input type="checkbox" name="bydayAll[]" id="'
-       . $byday_names[$rpt_byday_mod] . '" value="'
-       . "$byday_names[$rpt_byday_mod]\""
-       . ( in_array ( $byday_names[$rpt_byday_mod], $byday ) ? $checked : '' )
-       . ' /></td>';
-    }
-    echo '
+				. $byday_names[$rpt_byday_mod] . '" value="'
+				. "$byday_names[$rpt_byday_mod]\""
+				. (in_array($byday_names[$rpt_byday_mod], $byday) ? $checked : '')
+				. ' /></td>';
+		}
+		echo '
               </tr>
               <tr id="rptbydayln" style="visibility:hidden;">';
-    for ( $loop_ctr = 1; $loop_ctr < 6; $loop_ctr++ ) {
-      echo '
-                <th><label>' . $loop_ctr . '/' . ( $loop_ctr - 6 )
-       . '</label></th>';
-      for ( $rpt_byday = $WEEK_START; 
-              $rpt_byday <= ( $WEEK_START + 6); $rpt_byday++ ) {
-                $rpt_byday_mod = $rpt_byday %7;
-        $buttonvalue = ( in_array ( $loop_ctr
-             . $byday_names[$rpt_byday_mod], $byday )
-          ? $loop_ctr . translate ( $byday_names[$rpt_byday_mod] )
-          : ( in_array ( ( $loop_ctr - 6 ) 
-                    . $byday_names[$rpt_byday_mod], $byday )
-          ? ( $loop_ctr - 6 )
-          . translate ( $byday_names[$rpt_byday_mod] ) : '        ' ) );
+		for ($loop_ctr = 1; $loop_ctr < 6; $loop_ctr++) {
+			echo '
+                <th><label>' . $loop_ctr . '/' . ($loop_ctr - 6)
+				. '</label></th>';
+			for ($rpt_byday = $WEEK_START;
+			     $rpt_byday <= ($WEEK_START + 6); $rpt_byday++) {
+				$rpt_byday_mod = $rpt_byday % 7;
+				$buttonvalue = (in_array($loop_ctr
+					. $byday_names[$rpt_byday_mod], $byday)
+					? $loop_ctr . translate($byday_names[$rpt_byday_mod])
+					: (in_array(($loop_ctr - 6)
+						. $byday_names[$rpt_byday_mod], $byday)
+						? ($loop_ctr - 6)
+						. translate($byday_names[$rpt_byday_mod]) : '        '));
 
-        echo '
+				echo '
                 <td><input type="button" name="byday" id="_' . $loop_ctr
-         . $rpt_byday_mod . '" value="' . $buttonvalue
-         . '" onclick="toggle_byday( this )" /></td>';
-      }
-      echo '
+					. $rpt_byday_mod . '" value="' . $buttonvalue
+					. '" onclick="toggle_byday( this )" /></td>';
+			}
+			echo '
               </tr>';
-      if ( $loop_ctr < 5 )
-        echo '
+			if ($loop_ctr < 5)
+				echo '
               <tr id="rptbydayln' . $loop_ctr . '" style="visibility:hidden;">';
-    }
-    echo '
+		}
+		echo '
             </table>
           </td>
         </tr>
@@ -1260,23 +1412,23 @@ if ( $can_edit ) {
           <td colspan="4"></td>
         </tr>
         <tr id="rptbymonth" style="visibility:hidden;" title="'
-     . tooltip ( 'repeat-month-help' ) . '">
-          <td class="tooltip">' . translate ( 'ByMonth' ) . ':&nbsp;</td>
+			. tooltip('repeat-month-help') . '">
+          <td class="tooltip">' . translate('ByMonth') . ':&nbsp;</td>
           <td colspan="2" class="boxall">'
-    /* Display bymonth selection. */ . '
+			/* Display bymonth selection. */ . '
             <table cellpadding="5" cellspacing="0" summary="">
               <tr>';
-    for ( $rpt_month = 1; $rpt_month < 13; $rpt_month++ ) {
-      echo '
+		for ($rpt_month = 1; $rpt_month < 13; $rpt_month++) {
+			echo '
                 <td><label><input type="checkbox" name="bymonth[]" value="'
-       . $rpt_month . '"' . ( in_array ( $rpt_month, $bymonth ) ? $checked : '' )
-       . ' />&nbsp;' . translate (
-        date ( 'M', mktime ( 0, 0, 0, $rpt_month, 1 ) ) )
-       . '</label></td>' . ( $rpt_month == 6 ? '
+				. $rpt_month . '"' . (in_array($rpt_month, $bymonth) ? $checked : '')
+				. ' />&nbsp;' . translate(
+					date('M', mktime(0, 0, 0, $rpt_month, 1)))
+				. '</label></td>' . ($rpt_month == 6 ? '
               </tr>
-              <tr>' : '' );
-    }
-    echo '
+              <tr>' : '');
+		}
+		echo '
               </tr>
             </table>
           </td>
@@ -1285,40 +1437,40 @@ if ( $can_edit ) {
           <td colspan="4"></td>
         </tr>
         <tr id="rptbysetpos" style="visibility:hidden;" title="'
-     . tooltip ( 'repeat-bysetpos-help' ) . '">
-          <td class="tooltip" id="BySetPoslabel">' . translate ( 'BySetPos' )
-     . ':&nbsp;</td>
+			. tooltip('repeat-bysetpos-help') . '">
+          <td class="tooltip" id="BySetPoslabel">' . translate('BySetPos')
+			. ':&nbsp;</td>
           <td colspan="2" class="boxall">'
-    /* Display bysetpos selection. */ . '
+			/* Display bysetpos selection. */ . '
             <table class="byxxx" cellpadding="2" cellspacing="0" '
-     . 'border="1" summary="">
+			. 'border="1" summary="">
               <tr>
                 <td></td>';
-    for ( $rpt_bysetpos_label = 1; $rpt_bysetpos_label < 11;
-      $rpt_bysetpos_label++ ) {
-      echo '
+		for ($rpt_bysetpos_label = 1; $rpt_bysetpos_label < 11;
+		     $rpt_bysetpos_label++) {
+			echo '
                 <th width="37px"><label>' . $rpt_bysetpos_label
-       . '</label></th>';
-    }
-    echo '
+				. '</label></th>';
+		}
+		echo '
               </tr>
               <tr>';
-    for ( $loop_ctr = 1; $loop_ctr < 32; $loop_ctr++ ) {
-      $buttonvalue = ( in_array ( $loop_ctr, $bysetpos )
-        ? ( $loop_ctr ) : ( in_array ( ( $loop_ctr -32 ), $bysetpos )
-          ? ( $loop_ctr -32 ) : '      ' ) );
-      echo ( $loop_ctr == 1 || $loop_ctr == 11 || $loop_ctr == 21 ? '
-                <th><label>' . $loop_ctr . '-' . ( $loop_ctr + 9 )
-         . '</label></th>' : '' ) . ( $loop_ctr == 31 ? '
-                <th><label>31</label></th>' : '' ) . '
+		for ($loop_ctr = 1; $loop_ctr < 32; $loop_ctr++) {
+			$buttonvalue = (in_array($loop_ctr, $bysetpos)
+				? ($loop_ctr) : (in_array(($loop_ctr - 32), $bysetpos)
+					? ($loop_ctr - 32) : '      '));
+			echo ($loop_ctr == 1 || $loop_ctr == 11 || $loop_ctr == 21 ? '
+                <th><label>' . $loop_ctr . '-' . ($loop_ctr + 9)
+					. '</label></th>' : '') . ($loop_ctr == 31 ? '
+                <th><label>31</label></th>' : '') . '
                 <td><input type="button" name="bysetpos" id="bysetpos'
-       . $loop_ctr . '" value="' . $buttonvalue
-       . '" onclick="toggle_bysetpos( this )" /></td>'
-       . ( $loop_ctr % 10 == 0 ? '
+				. $loop_ctr . '" value="' . $buttonvalue
+				. '" onclick="toggle_bysetpos( this )" /></td>'
+				. ($loop_ctr % 10 == 0 ? '
               </tr>
-            <tr>' : '' );
-    }
-    echo '
+            <tr>' : '');
+		}
+		echo '
             </tr>
           </table>
         </td>
@@ -1327,225 +1479,225 @@ if ( $can_edit ) {
         <td colspan="4"></td>
       </tr>
       <tr id="rptbymonthdayextended" style="visibility:hidden;" title="'
-     . tooltip ( 'repeat-bymonthdayextended-help' ) . '">
-        <td class="tooltip" id="ByMonthDaylabel">' . translate ( 'ByMonthDay' )
-     . ':&nbsp;</td>
+			. tooltip('repeat-bymonthdayextended-help') . '">
+        <td class="tooltip" id="ByMonthDaylabel">' . translate('ByMonthDay')
+			. ':&nbsp;</td>
         <td colspan="2" class="boxall">'
-    /* Display bymonthday extended selection. */ . '
+			/* Display bymonthday extended selection. */ . '
           <table class="byxxx" cellpadding="2" cellspacing="0" '
-     . 'border="1" summary="">
+			. 'border="1" summary="">
             <tr>
               <td></td>';
-    for ( $rpt_bymonthday_label = 1; $rpt_bymonthday_label < 11;
-      $rpt_bymonthday_label++ ) {
-      echo '
+		for ($rpt_bymonthday_label = 1; $rpt_bymonthday_label < 11;
+		     $rpt_bymonthday_label++) {
+			echo '
               <th width="37px"><label>' . $rpt_bymonthday_label
-       . '</label></th>';
-    }
-    echo '
+				. '</label></th>';
+		}
+		echo '
             </tr>
             <tr>';
-    for ( $loop_ctr = 1; $loop_ctr < 32; $loop_ctr++ ) {
-      $buttonvalue = ( in_array ( $loop_ctr, $bymonthday )
-        ? ( $loop_ctr ) : ( in_array ( ( $loop_ctr -32 ), $bymonthday )
-          ? ( $loop_ctr - 32 ) : '      ' ) );
-      echo ( $loop_ctr == 1 || $loop_ctr == 11 || $loop_ctr == 21 ? '
-            <th><label>' . $loop_ctr . '-' . ( $loop_ctr + 9 )
-         . '</label></th>' : '' )
-       . ( $loop_ctr == 31 ? '
-            <th><label>31</label></th>' : '' ) . '
+		for ($loop_ctr = 1; $loop_ctr < 32; $loop_ctr++) {
+			$buttonvalue = (in_array($loop_ctr, $bymonthday)
+				? ($loop_ctr) : (in_array(($loop_ctr - 32), $bymonthday)
+					? ($loop_ctr - 32) : '      '));
+			echo ($loop_ctr == 1 || $loop_ctr == 11 || $loop_ctr == 21 ? '
+            <th><label>' . $loop_ctr . '-' . ($loop_ctr + 9)
+					. '</label></th>' : '')
+				. ($loop_ctr == 31 ? '
+            <th><label>31</label></th>' : '') . '
             <td><input type="button" name="bymonthday" id="bymonthday'
-       . $loop_ctr . '" value="' . $buttonvalue
-       . '" onclick="toggle_bymonthday( this )" /></td>'
-       . ( $loop_ctr % 10 == 0 ? '
+				. $loop_ctr . '" value="' . $buttonvalue
+				. '" onclick="toggle_bymonthday( this )" /></td>'
+				. ($loop_ctr % 10 == 0 ? '
           </tr>
-          <tr>' : '' );
-    }
-    echo '
+          <tr>' : '');
+		}
+		echo '
           </tr>
         </table>';
 
-    // Populate Repeat Exceptions data for later use.
-    $excepts = '';
-    $exceptcnt = count ( $exceptions );
-    for ( $i = 0; $i < $exceptcnt; $i++ ) {
-      $excepts .= '
+		// Populate Repeat Exceptions data for later use.
+		$excepts = '';
+		$exceptcnt = count($exceptions);
+		for ($i = 0; $i < $exceptcnt; $i++) {
+			$excepts .= '
                   <option value="-' . $exceptions[$i] . '">-' . $exceptions[$i]
-       . '</option>';
-    }
-    // Populate Repeat Inclusions data for later use
-    $includecnt = count ( $inclusions );
-    for ( $i = 0; $i < $includecnt; $i++ ) {
-      $excepts .= '
+				. '</option>';
+		}
+		// Populate Repeat Inclusions data for later use
+		$includecnt = count($inclusions);
+		for ($i = 0; $i < $includecnt; $i++) {
+			$excepts .= '
                   <option value="+' . $inclusions[$i] . '">+' . $inclusions[$i]
-       . '</option>';
-    }
+				. '</option>';
+		}
 
-    echo '
+		echo '
        </td>
       </tr>
       <tr id="rptbyweekno" style="visibility:hidden;" title="'
-     . tooltip ( 'repeat-byweekno-help' ) . '">
-        <td class="tooltip">' . translate ( 'ByWeekNo' ) . ':</td>
+			. tooltip('repeat-byweekno-help') . '">
+        <td class="tooltip">' . translate('ByWeekNo') . ':</td>
         <td colspan="2"><input type="text" name="byweekno" id="byweekno" '
-     . 'size="50" maxlength="100" value="' . $byweekno . '" /></td>
+			. 'size="50" maxlength="100" value="' . $byweekno . '" /></td>
       </tr>
       <tr id="rptbyyearday" style="visibility:hidden;" title="'
-     . tooltip ( 'repeat-byyearday-help' ) . '">
-        <td class="tooltip">' . translate ( 'ByYearDay' ) . ':</td>
+			. tooltip('repeat-byyearday-help') . '">
+        <td class="tooltip">' . translate('ByYearDay') . ':</td>
         <td colspan="2"><input type="text" name="byyearday" id="byyearday" '
-     . 'size="50" maxlength="100" value="' . $byyearday . '" /></td>
+			. 'size="50" maxlength="100" value="' . $byyearday . '" /></td>
       </tr>
       <tr id="rptexceptions" style="visibility:visible;" title="'
-     . tooltip ( 'repeat-exceptions-help' ) . '">
-        <td class="tooltip"><label>' . translate ( 'Exclusions' ) . '/<br />'
-     . translate ( 'Inclusions' ) . ':</label></td>
+			. tooltip('repeat-exceptions-help') . '">
+        <td class="tooltip"><label>' . translate('Exclusions') . '/<br />'
+			. translate('Inclusions') . ':</label></td>
         <td colspan="2" class="boxtop boxright boxbottom boxleft">
           <table border="0" width="250px" summary="">
             <tr>
               <td colspan="2">'
-     . date_selection ( 'except_', $rpt_end_date ? $rpt_end_date : $cal_date )
-     . '</td>
+			. date_selection('except_', $rpt_end_date ? $rpt_end_date : $cal_date)
+			. '</td>
             </tr>
             <tr>
               <td align="right" valign="top" width="100">
                 <label id="select_exceptions_not" style="visibility:'
-     . ( empty ( $excepts ) ? 'visible' : 'hidden' ) . ';"></label>
+			. (empty ($excepts) ? 'visible' : 'hidden') . ';"></label>
                 <select id="select_exceptions" name="exceptions[]" '
-     . 'multiple="multiple" style="visibility:'
-     . ( empty ( $excepts ) ? 'hidden' : 'visible' )
-     . ';" size="4">' . $excepts . '
+			. 'multiple="multiple" style="visibility:'
+			. (empty ($excepts) ? 'hidden' : 'visible')
+			. ';" size="4">' . $excepts . '
                 </select>
               </td>
               <td valign="top">
                 <input align="left" type="button" name="addException" value="'
-     . translate ( 'Add Exception' ) . '" onclick="add_exception(0)" /><br />
+			. translate('Add Exception') . '" onclick="add_exception(0)" /><br />
                 <input align="left" type="button" name="addInclusion" value="'
-     . translate ( 'Add Inclusion' ) . '" onclick="add_exception(1)" /><br />
+			. translate('Add Inclusion') . '" onclick="add_exception(1)" /><br />
                 <input align="left" type="button" name="delSelected" value="'
-     . translate ( 'Delete Selected' ) . '" onclick="del_selected()" />
+			. translate('Delete Selected') . '" onclick="del_selected()" />
               </td>
             </tr>
           </table>
         </td>
       </tr>
-    </table>' . ( $useTabs ? '
+    </table>' . ($useTabs ? '
     </div> <!-- End tabscontent_pete -->' : '
-    </fieldset>' );
-  }
+    </fieldset>');
+	}
 
-  echo '
+	echo '
 
 <!-- REMINDER INFO -->';
-  if ( $DISABLE_REMINDER_FIELD != 'Y' ) {
-    $rem_minutes = $reminder_offset;
-    // Will be specified in total minutes.
-    $rem_days = intval ( $rem_minutes / 1440 );
-    $rem_minutes -= ( $rem_days * 1440 );
-    $rem_hours = intval ( $rem_minutes / 60 );
-    $rem_minutes -= ( $rem_hours * 60 );
+	if ($DISABLE_REMINDER_FIELD != 'Y') {
+		$rem_minutes = $reminder_offset;
+		// Will be specified in total minutes.
+		$rem_days = intval($rem_minutes / 1440);
+		$rem_minutes -= ($rem_days * 1440);
+		$rem_hours = intval($rem_minutes / 60);
+		$rem_minutes -= ($rem_hours * 60);
 
-    $rem_before =
-    ( empty ( $reminder['before'] ) || $reminder['before'] == 'Y' );
-    $rem_related =
-    ( empty ( $reminder['related'] ) || $reminder['related'] == 'S' );
+		$rem_before =
+			(empty ($reminder['before']) || $reminder['before'] == 'Y');
+		$rem_related =
+			(empty ($reminder['related']) || $reminder['related'] == 'S');
 
-    // Reminder Repeats.
-    $rem_rep_count =
-    ( isset ( $reminder['repeats'] ) ? $reminder['repeats'] : 0 );
-    $rem_rep_minutes =
-    ( isset ( $reminder['duration'] ) ? $reminder['duration'] : 0 );
+		// Reminder Repeats.
+		$rem_rep_count =
+			(isset ($reminder['repeats']) ? $reminder['repeats'] : 0);
+		$rem_rep_minutes =
+			(isset ($reminder['duration']) ? $reminder['duration'] : 0);
 
-    // Will be specified in total minutes.
-    $rem_rep_days = intval ( $rem_rep_minutes / 1440 );
-    $rem_rep_minutes -= ( $rem_rep_days * 1440 );
-    $rem_rep_hours = intval ( $rem_rep_minutes / 60 );
-    $rem_rep_minutes -= ( $rem_rep_hours * 60 );
+		// Will be specified in total minutes.
+		$rem_rep_days = intval($rem_rep_minutes / 1440);
+		$rem_rep_minutes -= ($rem_rep_days * 1440);
+		$rem_rep_hours = intval($rem_rep_minutes / 60);
+		$rem_rep_minutes -= ($rem_rep_hours * 60);
 
-    echo ( $useTabs ? '
+		echo ($useTabs ? '
     <a name="tabreminder"></a>
     <div id="tabscontent_reminder">' : '
     <fieldset>
-      <legend>' . translate ( 'Reminders' ) . '</legend>' ) . '
+      <legend>' . translate('Reminders') . '</legend>') . '
       <table border="0" cellspacing="0" cellpadding="3" summary="">
         <thead>
           <tr>
-            <td class="tooltip"><label>' . translate ( 'Send Reminder' )
-     . ':</label></td>
+            <td class="tooltip"><label>' . translate('Send Reminder')
+			. ':</label></td>
             <td colspan="3">
               <input type="hidden" name="rem_action" value="'
-     . ( empty ( $reminder['action'] ) ? 'EMAIL' : $reminder['action'] ) . '" />
+			. (empty ($reminder['action']) ? 'EMAIL' : $reminder['action']) . '" />
               <input type="hidden" name="rem_last_sent" value="'
-     . ( empty ( $reminder['last_sent'] ) ? 0 : $reminder['last_sent'] ) . '" />
+			. (empty ($reminder['last_sent']) ? 0 : $reminder['last_sent']) . '" />
               <input type="hidden" name="rem_times_sent" value="'
-     . ( empty ( $reminder['times_sent'] ) ? 0 : $reminder['times_sent'] )
-     . '" />
+			. (empty ($reminder['times_sent']) ? 0 : $reminder['times_sent'])
+			. '" />
                 <label><input type="radio" name="reminder" '
-     . 'id="reminderYes" value="1"'
-     . ( $rem_status ? $checked : '' ) . ' onclick="toggle_reminders()" />'
-     . translate ( 'Yes' ) . '</label>&nbsp;
+			. 'id="reminderYes" value="1"'
+			. ($rem_status ? $checked : '') . ' onclick="toggle_reminders()" />'
+			. translate('Yes') . '</label>&nbsp;
                 <label><input type="radio" name="reminder" '
-     . 'id="reminderNo" value="0"'
-     . ( $rem_status ? '' : $checked ) . ' onclick="toggle_reminders()" />'
-     . translate ( 'No' ) . '</label>
+			. 'id="reminderNo" value="0"'
+			. ($rem_status ? '' : $checked) . ' onclick="toggle_reminders()" />'
+			. translate('No') . '</label>
             </td>
           </tr>
         </thead>
         <tbody id="reminder_when">
           <tr>
-            <td class="tooltip" rowspan="6"><label>' . translate ( 'When' )
-     . ':</label></td>
+            <td class="tooltip" rowspan="6"><label>' . translate('When')
+			. ':</label></td>
             <td class="boxtop boxleft" width="20%"><label><input type="radio" '
-     . 'name="rem_when" id="rem_when_date" value="Y" '
-     . ( $rem_use_date ? $checked : '' ) . ' onclick="toggle_rem_when()" />'
-     . translate ( 'Use Date/Time' ) . '&nbsp;</label></td>
+			. 'name="rem_when" id="rem_when_date" value="Y" '
+			. ($rem_use_date ? $checked : '') . ' onclick="toggle_rem_when()" />'
+			. translate('Use Date/Time') . '&nbsp;</label></td>
             <td class="boxtop boxright" nowrap="nowrap" colspan="2">'
-     . date_selection ( 'reminder_', ( empty ( $reminder['date'] )
-        ? $cal_date : $reminder['date'] ) ) . '</td>
+			. date_selection('reminder_', (empty ($reminder['date'])
+				? $cal_date : $reminder['date'])) . '</td>
           </tr>
           <tr>
             <td class="boxleft">&nbsp;</td>
             <td class="boxright" colspan="2" nowrap="nowrap">'
-     . time_selection ( 'reminder_', ( empty ( $reminder['time'] )
-        ? $cal_time : $reminder['time'] ) ) . '</td>
+			. time_selection('reminder_', (empty ($reminder['time'])
+				? $cal_time : $reminder['time'])) . '</td>
           </tr>
           <tr>
             <td class="boxright boxleft" height="20px" colspan="3">&nbsp;</td>
           </tr>
           <tr>
             <td class="boxleft"><label><input type="radio" name="rem_when" '
-     . 'id="rem_when_offset" value="N" ' . ( $rem_use_date ? '' : $checked )
-     . ' onclick="toggle_rem_when()" />' . translate ( 'Use Offset' )
-     . '&nbsp;</label></td>
+			. 'id="rem_when_offset" value="N" ' . ($rem_use_date ? '' : $checked)
+			. ' onclick="toggle_rem_when()" />' . translate('Use Offset')
+			. '&nbsp;</label></td>
             <td class="boxright" nowrap="nowrap" colspan="2">
               <label><input type="text" size="2" name="rem_days" value="'
-     . $rem_days . '" />' . $daysStr . '</label>&nbsp;
+			. $rem_days . '" />' . $daysStr . '</label>&nbsp;
               <label><input type="text" size="2" name="rem_hours" '
-     . 'value="' .$rem_hours . '" />' . $hoursStr . '</label>&nbsp;
+			. 'value="' . $rem_hours . '" />' . $hoursStr . '</label>&nbsp;
               <label><input type="text" size="2" name="rem_minutes" value="'
-     . $rem_minutes . '" />' . $minutStr . '</label>
+			. $rem_minutes . '" />' . $minutStr . '</label>
             </td>
           </tr>
           <tr>
             <td class="boxleft">&nbsp;</td>
             <td><label><input type="radio" name="rem_before" '
-     . 'id="rem_beforeY" value="Y"'
-     . ( $rem_before ? $checked : '' ) . ' />' . translate ( 'Before' )
-     . '</label>&nbsp;</td>
+			. 'id="rem_beforeY" value="Y"'
+			. ($rem_before ? $checked : '') . ' />' . translate('Before')
+			. '</label>&nbsp;</td>
             <td class="boxright"><label><input type="radio" name="rem_before" '
-     . 'id="rem_beforeN" value="N"' . ( $rem_before ? '' : $checked ) . ' />'
-     . translate ( 'After' ) . '</label></td>
+			. 'id="rem_beforeN" value="N"' . ($rem_before ? '' : $checked) . ' />'
+			. translate('After') . '</label></td>
           </tr>
           <tr>
             <td class="boxbottom boxleft">&nbsp;</td>
             <td class="boxbottom"><label><input type="radio" '
-     . 'name="rem_related" id="rem_relatedS" value="S"'
-     . ( $rem_related ? $checked : '' ) . ' />'
-     . translate ( 'Start' ) . '</label>&nbsp;</td>
+			. 'name="rem_related" id="rem_relatedS" value="S"'
+			. ($rem_related ? $checked : '') . ' />'
+			. translate('Start') . '</label>&nbsp;</td>
             <td class="boxright boxbottom"><label><input type="radio" '
-     . 'name="rem_related" id="rem_relatedE" value="E"'
-     . ( $rem_related ? '' : $checked ) . ' />' . translate ( 'End/Due' )
-     . '</label></td>
+			. 'name="rem_related" id="rem_relatedE" value="E"'
+			. ($rem_related ? '' : $checked) . ' />' . translate('End/Due')
+			. '</label></td>
           </tr>
           <tr>
             <td colspan="4"></td>
@@ -1553,67 +1705,67 @@ if ( $can_edit ) {
         </tbody>
         <tbody id="reminder_repeat">
           <tr>
-            <td class="tooltip" rowspan="2"><label>' . translate ( 'Repeat' )
-     . ':</label></td>
+            <td class="tooltip" rowspan="2"><label>' . translate('Repeat')
+			. ':</label></td>
             <td class="boxtop boxleft">&nbsp;&nbsp;&nbsp;<label>'
-     . translate ( 'Times' ) . '</label></td>
+			. translate('Times') . '</label></td>
             <td class="boxtop boxright" colspan="2"><input type="text" '
-     . 'size="2" name="rem_rep_count" value="' . $rem_rep_count
-     . '" onchange="toggle_rem_rep();" /></td>
+			. 'size="2" name="rem_rep_count" value="' . $rem_rep_count
+			. '" onchange="toggle_rem_rep();" /></td>
           </tr>
           <tr id="rem_repeats">
             <td class="boxbottom boxleft">&nbsp;&nbsp;&nbsp;<label>'
-     . translate ( 'Every' ) . '</label></td>
+			. translate('Every') . '</label></td>
             <td class="boxbottom boxright" colspan="2">
               <label><input type="text" size="2" name="rem_rep_days" value="'
-     . $rem_rep_days . '" />' . $daysStr . '</label>&nbsp;
+			. $rem_rep_days . '" />' . $daysStr . '</label>&nbsp;
               <input type="text" size="2" name="rem_rep_hours" value="'
-     . $rem_rep_hours . '" /><label>' . $hoursStr . '</label>&nbsp;
+			. $rem_rep_hours . '" /><label>' . $hoursStr . '</label>&nbsp;
               <input type="text" size="2" name="rem_rep_minutes" value="'
-     . $rem_rep_minutes . '" /><label>' . $minutStr . '</label>
+			. $rem_rep_minutes . '" /><label>' . $minutStr . '</label>
             </td>
           </tr>
         </tbody>
-      </table>' . ( $useTabs ? '
+      </table>' . ($useTabs ? '
     </div>
 <!-- End tabscontent_pete -->' : '
-    </fieldset>' );
-  }
+    </fieldset>');
+	}
 
-  if ( file_exists ( 'includes/classes/captcha/captcha.php' ) &&
-      $login == '__public__' && !
-      empty ( $ENABLE_CAPTCHA ) && $ENABLE_CAPTCHA == 'Y' ) {
-    if ( function_exists ( 'imagecreatetruecolor' ) ) {
-      include_once 'includes/classes/captcha/captcha.php';
-      echo captcha::form ();
-    } else
-      etranslate ( 'CAPTCHA Warning' );
-  }
-  echo '
+	if (file_exists('includes/classes/captcha/captcha.php') &&
+		$login == '__public__' && !
+		empty ($ENABLE_CAPTCHA) && $ENABLE_CAPTCHA == 'Y') {
+		if (function_exists('imagecreatetruecolor')) {
+			include_once 'includes/classes/captcha/captcha.php';
+			echo captcha::form();
+		} else
+			etranslate('CAPTCHA Warning');
+	}
+	echo '
     </div>
 <!-- End tabscontent -->';
 
-  echo '
+	echo '
       <table summary="">
         <tr>
           <td>
             <script type="text/javascript">
 <!-- <![CDATA[
               document.writeln ( \'<input class="sv" type="button" value="'
-     . $saveStr . '" onclick="validate_and_submit()" />\' )
+		. $saveStr . '" onclick="validate_and_submit()" />\' )
 //]]> -->
             </script>
             <noscript><input type="submit" value="' . $saveStr
-     . '" /></noscript>
+		. '" /></noscript>
           </td>
         </tr>
       </table>
       <input type="hidden" name="participant_list" value="" />'
-  // This bit should be moved to a webcal_fckconfig.js file.
-  // Then the current FCKEditor SVN version would probably work.
-       . ( $use_fckeditor ? '
+		// This bit should be moved to a webcal_fckconfig.js file.
+		// Then the current FCKEditor SVN version would probably work.
+		. ($use_fckeditor ? '
       <script type="text/javascript" '
-     . 'src="includes/FCKeditor-2.0/fckeditor.js"></script>
+			. 'src="includes/FCKeditor-2.0/fckeditor.js"></script>
       <script type="text/javascript">
         var myFCKeditor = new FCKeditor ( \'description\' );
 
@@ -1621,23 +1773,23 @@ if ( $can_edit ) {
         myFCKeditor.ToolbarSet = \'Medium\';
         myFCKeditor.Config[\'SkinPath\'] = \'./skins/office2003/\';
         myFCKeditor.ReplaceTextarea ();
-      </script>' : '' ) . '
+      </script>' : '') . '
     </form>';
 
-  if ( $id > 0 && ( $login == $create_by || $single_user == 'Y' || $is_admin ) )
-    echo '
+	if ($id > 0 && ($login == $create_by || $single_user == 'Y' || $is_admin))
+		echo '
     <a href="del_entry.php?id=' . $id . '" onclick="return confirm( \''
-     . str_replace ( 'XXX', translate ( 'entry' ),
-      translate ( 'Are you sure you want to delete this XXX?' ) ) . '\' );">'
-     . translate ( 'Delete entry' ) . '</a><br />';
+			. str_replace('XXX', translate('entry'),
+				translate('Are you sure you want to delete this XXX?')) . '\' );">'
+			. translate('Delete entry') . '</a><br />';
 } else
-  // translate ( 'You are not authorized to edit this entry.' )
-  echo str_replace ( 'XXX', translate ( 'entry' ),
-    translate ( 'You are not authorized to edit this XXX.' ) );
+	// translate ( 'You are not authorized to edit this entry.' )
+	echo str_replace('XXX', translate('entry'),
+		translate('You are not authorized to edit this XXX.'));
 // end if ( $can_edit )
 
-ob_end_flush ();
+ob_end_flush();
 
-echo print_trailer ();
+echo print_trailer();
 
 ?>

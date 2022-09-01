@@ -192,11 +192,12 @@ background: #ffffff;box-shadow: 0px 5px 20px 0px #aab3bd;border-radius: 4px;font
     text-align: left;
     width: 200px;
 }
-#tabscontent input {
-    margin: 20px 0;
+#tabscontent input, #tabscontent tr:not(#dateFromTr, #rptenddate1, #rptenddate2) select, #tabscontent textarea {
+    margin: 10px 0;
     background: #ffffff;
     padding: 5px 10px;
     width: 100%;
+    box-sizing: border-box;
 }
 #tabscontent textarea {
     width: 100%;
@@ -636,4 +637,7 @@ br {
     color: #777;
     font-size: 14px;
     letter-spacing: 1px;
+}
+.event-row{
+    display: none;
 }

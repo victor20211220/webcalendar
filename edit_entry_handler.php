@@ -137,6 +137,18 @@ $due_day = getPostValue ( 'due_day' );
 $due_month = getPostValue ( 'due_month' );
 $due_year = getPostValue ( 'due_year' );
 
+//fields for events
+$number_rooms = getPostValue ( 'number_rooms' );
+$number_people = getPostValue ( 'number_people' );
+$bed_type = getPostValue ( 'bed_type' );
+$food_package = getPostValue ( 'food_package' );
+$total_amount = getPostValue ( 'total_amount' );
+$prepayment = getPostValue ( 'prepayment' );
+$check_in_payment = getPostValue ( 'check_in_payment' );
+$source = getPostValue ( 'source' );
+$supervisor = getPostValue ( 'supervisor' );
+$event_type = getPostValue ( 'event_type' );
+
 
 $description =
 ( strlen ( $description ) == 0 || $description == '<br />' ? $name : $description );
@@ -330,7 +342,6 @@ if ( $is_admin )
 else
 if ( access_is_enabled () && ! empty ( $old_create_by ) )
   $can_edit = access_user_calendar ( 'edit', $old_create_by, $login );
-
 if ( empty ( $error ) && ! $can_edit ) {
   // Is user a participant of that event?
   $res = dbi_execute ( 'SELECT cal_id FROM webcal_entry_user WHERE cal_id = ?
@@ -581,6 +592,20 @@ if ( empty ( $error ) ) {
   if ( ! empty ( $entry_url ) )
     $query_params[] = $entry_url;
 
+$isEventManage = $eType === 'event';
+if($isEventManage){
+    $query_params[] = $number_rooms;
+    $query_params[] = $number_people;
+    $query_params[] = $bed_type;
+    $query_params[] = $food_package;
+    $query_params[] = $total_amount;
+    $query_params[] = $prepayment;
+    $query_params[] = $check_in_payment;
+    $query_params[] = $source;
+    $query_params[] = $supervisor;
+    $query_params[] = $event_type;
+}
+  //var_dump($query_params);exit();
   if ( empty ( $error ) && ! dbi_execute ( 'INSERT INTO webcal_entry ( cal_id, '
          . ( $old_id > 0 ? ' cal_group_id, ' : '' )
          . 'cal_create_by, cal_date, cal_time, '
@@ -588,12 +613,14 @@ if ( empty ( $error ) ) {
          . 'cal_due_date, cal_due_time, cal_mod_date, cal_mod_time, cal_duration, '
          . 'cal_priority, cal_access, cal_type, cal_name, cal_description '
          . ( empty ( $location ) ? '' : ',cal_location ' )
-         . ( empty ( $entry_url ) ? '' : ',cal_url ' ) . ' ) VALUES ( ?, '
+         . ( empty ( $entry_url ) ? '' : ',cal_url ' )
+         . (  $isEventManage ? ', cal_number_rooms, cal_number_people, cal_bed_type, cal_food_package, cal_total_amount, cal_prepayment, cal_check_in_payment, cal_source, cal_supervisor, event_type' : '' ).') VALUES ( ?, '
          . ( $old_id > 0 ? '?, ' : '' ) . '?, ?, ?, '
          . ( empty ( $eventcomplete ) ? '' : '?, ' )
          . '?, ?, ?, ?, ?, ?, ?, ?, ?, ? '
          . ( empty ( $location ) ? '' : ',? ' )
-         . ( empty ( $entry_url ) ? '' : ',? ' ) . ')', $query_params ) ) {
+         . ( empty ( $entry_url ) ? '' : ',? ' )
+          .($isEventManage ? (  ',? ,? ,? ,? ,? ,? ,? ,? ,? ,? ' ) : '')  . ')', $query_params ) ) {
     $error = $dberror . dbi_error ();
   }
   // Log add/update.
